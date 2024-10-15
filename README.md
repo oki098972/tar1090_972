@@ -1,5 +1,7 @@
 # tar1090
 
+# `UNDER CONSTRUCTION...`
+`ˆÈ‰º‚ÍforkŒ³‚æ‚è–¢•ÏX‚Ìˆ×“®ì•ÛØ‚µ‚È‚¢`
 
 ![Screenshot1](https://raw.githubusercontent.com/wiedehopf/tar1090/screenshots/screenshot3.png)
 
@@ -23,9 +25,11 @@ dump1090-mutability installations should work as well, aircraft details will be 
 
 ## Installation
 
-```
-sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)"
-```
+
+~~sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)"~~
+
+~~sudo bash -c "$(wget -nv -O - https://github.com/oki098972/tar1090/raw/master/install.sh)"~~
+
 
 ## View the added webinterface
 
@@ -41,9 +45,9 @@ Check further down for keyboard shortcuts.
 
 ## Update (same command as installation)
 
-```
-sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)"
-```
+
+~~sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/install.sh)"~~
+
 
 Configuration should be preserved.
 
