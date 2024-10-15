@@ -19,12 +19,12 @@ while read -r FILE; do
     prefix=$(cut -d '.' -f1 <<< "$FILE")
     postfix=$(cut -d '.' -f2 <<< "$FILE")
     newname="${prefix}_${md5sum}.${postfix}"
-    mv "$FILE" "$newname"
+#    mv "$FILE" "$newname"
     sedreplaceargs+=("-e" "s#${FILE}#${newname}#")
     if [[ "$FILE" == "script.js" ]]; then
         SCRIPT_JS="$newname"
     fi
 done < "$LISTPATH"
 
-sed -i "${sedreplaceargs[@]}" "$HTMLFOLDER"/index.html
-sed -i "${sedreplaceargs[@]}" "$HTMLFOLDER"/"$SCRIPT_JS"
+#sed -i "${sedreplaceargs[@]}" "$HTMLFOLDER"/index.html
+#sed -i "${sedreplaceargs[@]}" "$HTMLFOLDER"/"$SCRIPT_JS"
