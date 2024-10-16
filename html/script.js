@@ -3991,9 +3991,47 @@ function refreshFeatures() {
 //chg-e Change Layout by oki098972
         align: 'right' };
     cols.rssi = {
-        text: 'RSSI',
+//chg-s First catch time by oki098972
+        //text: 'RSSI',
+        text: 'RSSI' + ' / First',
+        header: function () { return 'RSSI'+ '<BR>' + '/First';},
+//chg-e First catch time by oki098972
         sort: function () { sortBy('rssi', compareNumeric, function(x) { return x.rssi; }); },
-        value: function(plane) { return (plane.rssi != null ? plane.rssi.toFixed(1) : ""); },
+//chg-s First catch time by oki098972
+        //value: function(plane) { return (plane.rssi != null ? plane.rssi.toFixed(1) : ""); },
+        value: function(plane) {
+            let arrayForLog = [];
+            let lowest_val = 99999999999999999999999, lowest_ind, i;
+            //for logging 表示桁を減らすために使用、桁が多いと目視確認で死ぬので const c_v = 1695700000;
+            arrayForLog[0] = plane.altitudeTime;
+            arrayForLog[1] = plane.flightTs;
+            arrayForLog[2] = plane.last_info_server;
+            arrayForLog[3] = plane.last_message_time;
+            arrayForLog[4] = plane.refreshTR;
+            arrayForLog[5] = plane.refreshTR;
+            if (pTracks) {
+                if (typeof plane.track_linesegs[0] !== "undefined") {
+				    //位置情報がない場合本プロパティはない為、存在確認してから参照する
+				    //[0]が最初かは不明だが普通時系列で並んでいるでしょう
+				    //値があるときはここの時間が他の配列要素より最古であることは確認済み
+				    //値がない場合は大体[3]が多いが[1]の時もあるので結局最小値を探すことにした
+                    arrayForLog[5] = plane.track_linesegs[0].ts;
+                }
+            }
+            for ( i = 0; i < arrayForLog.length; i++) {
+			    if (arrayForLog[i] == 0) {
+				    continue; //たまに他の要素に時間があるのに0の時があるので除外、[0]が多かったかな？
+				}
+			    if ( lowest_val > arrayForLog[i] )
+			    {
+				    lowest_val = arrayForLog[i];
+				    lowest_ind = i;
+				}
+			}
+            // for logging console.log(plane.icao, ": ", (lowest_ind != 5 ? "*" : ""), lowest_ind, (lowest_ind != 5 ? "*" : ""), ": ", Math.floor(arrayForLog[0] - c_v), " ", Math.floor(arrayForLog[1] - c_v), " ", Math.floor(arrayForLog[2] - c_v), " ", Math.floor(arrayForLog[3] - c_v), " ", Math.floor(arrayForLog[4] - c_v), " ", Math.floor(arrayForLog[5] - c_v), " ");
+            return ( pTracks ? (ConvUnixMSecToHourMinStr(lowest_val*1000)) : (plane.rssi != null ? plane.rssi.toFixed(1) : "") );
+        },
+//chg-e First catch time by oki098972
         align: 'right' };
     cols.lat = {
         text: 'Latitude',
@@ -9017,6 +9055,16 @@ function globeRateUpdate() {
     }
 }
 globeRateUpdate();
+
+//ins-s First catch time by oki098972
+//1970/1/1 0:00からの経過ミリ秒数をhh:mm形式の文字列で返す関数
+function ConvUnixMSecToHourMinStr(unix_msec) {
+    let loc_datetime = new Date(unix_msec);
+    //return loc_datetime.getHours() + ':' + loc_datetime.getMinutes();
+    //return ('0' + loc_datetime.getHours()).slice(-2) + ':' + ('0' + loc_datetime.getMinutes()).slice(-2);
+    return loc_datetime.getHours() + ':' + ('0' + loc_datetime.getMinutes()).slice(-2);
+}
+//ins-e First catch time by oki098972
 
 
 
