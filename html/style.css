@@ -1044,3 +1044,86 @@ input{
 #replaySpeedHint{
   grid-area: speedHint;
 }
+
+/* ins-s ’Ê•ñŠÈ—ª‰» param by oki098972 */
+.modalBo {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modalBo .innerBo {
+  //width: 100%;
+  //height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  margin: 10px;
+  display: block;
+  width: 500px;
+  height: auto;
+  border-radius: 5px;
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  padding: 20px;
+  text-align: left;
+  background-color: rgba(255, 255, 255, 0.9);
+  min-width: 400px;
+  max-width: 700px;
+  min-height: 200px;
+  max-height: 500px;
+  display: flex;
+  /* justify-content: center; */
+  justify-content: start;
+  /* align-items: center; */
+  align-items: start;
+  flex-direction: column;
+  color: #333;
+  font-size: 140%;
+  overflow: scroll;
+}
+.buttonModalBo{
+    background: #DDD;
+    color; #fff;
+    text-decoration: none;
+    color: #000;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    display: inline-block;
+    height: 35px;
+    padding: 2px 4px;
+    //text-transform: uppercase;
+    //font-size: 75% !important;
+    font-size: 12px;
+    cursor: pointer;
+    /* transition: background-color 0.2s; */
+    margin-bottom: 5px; 
+}
+.buttonModalBoOut{
+    width: 300px;
+    height: 50px;
+    bottom: 0;
+    right: 0;
+    /* ‚’¼•ûŒü‚Å’†‰›‘µ‚¦i‰º€”õj */
+    position: absolute;
+}
+.buttonModalBo:hover{
+  background: #777;
+  opacity: 0.8;
+}
+
+.bsPopupForm>label{
+    display: block;
+    margin-left: 80px;
+}
+.bsPopupForm>label>input{
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+/* ins-e ’Ê•ñŠÈ—ª‰» param by oki098972 */
