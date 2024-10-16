@@ -9086,6 +9086,506 @@ function ConvUnixMSecToHourMinStr(unix_msec) {
 //ins-e First catch time by oki098972
 
 
+//ins-s add 通報簡略化 param by oki098972
+function datetimestr(datedata) {
+    let toString = Object.prototype.toString;
+    let temp_str = "";
+    let flg = toString.call(datedata).slice(8, -1);
+    if(flg === 'Date'){
+        temp_str = (datedata.getMonth() + 1) + "/" + datedata.getDate() + " " + datedata.getHours().toString().padStart(2, '0') + ":" + datedata.getMinutes().toString().padStart(2, '0') + ":" + datedata.getSeconds().toString().padStart(2, '0');
+    }
+    return temp_str;
+}
 
+//ブラウザが用意しているconfirmダイアログは位置が変なところに出るので使いたくないのでカスタム版を使う
+//ネタ元：https://qiita.com/naoki-funawatari/items/4de792bfefe5eab909cc
+//confirm互換の為、同期間数として動作する、
+//ただし完全互換は無理らしく（そこまでこだわっていもいないし）呼ぶ側の処理（関数）をasyncで宣言する必要がある
+//例 async function Write_tweetstr() 関数内で await confirmAsync() で処理を呼ぶ
+const confirmAsync = async message => {
+    let i = 0;
+
+    document.getElementById("bs_message").innerHTML = message;
+    document.getElementById("bs_dialog").showModal();
+
+    //時間の選択肢を表示する処理
+    let c_t = new Date();
+    let tgt_time = Array(16);
+    let msectbl = Array(tgt_time.length - 1);
+    let tblbase = Array(-34680000, 480000, -52680000, 480000);
+    if ((c_t.getHours() == 7 && c_t.getMinute() >= 34) || (c_t.getHours() >= 8 && c_t.getHours() <= 21)) {
+        //msectbl = Array(-34680000, 480000, -52680000, 480000, -34680000, 480000, -52680000, 480000, -34680000, 480000, -52680000, 480000, -34680000, 480000, -52680000);
+        for(i = 0; i < msectbl.length; i++) {
+            msectbl[i] = tblbase[(i % 4)];
+        }
+        tgt_time[0] = new Date(c_t.getFullYear(), c_t.getMonth(), c_t.getDate(), 7, 34);
+    } else {
+        //msectbl = Array(-52680000, 480000, -34680000, 480000, -52680000, 480000, -34680000, 480000, -52680000, 480000, -34680000, 480000, -52680000, 480000, -34680000);
+        for(i = 0; i < msectbl.length; i++) {
+            msectbl[i] = tblbase[((i + 2) % 4)];
+        }
+        if (c_t.getHours() >= 22) {
+            tgt_time[0] = new Date(c_t.getFullYear(), c_t.getMonth(), c_t.getDate(), 22, 4);
+        } else {
+            tgt_time[0] = new Date(c_t.getFullYear(), c_t.getMonth(), c_t.getDate() - 1, 22, 4);
+        }
+    }
+    for (i = 0; i < tgt_time.length - 1; i++) {
+        tgt_time[i + 1] = new Date(tgt_time[i].valueOf() + msectbl[i]);
+    }
+    let formElement = document.getElementsByName("popupForm").item(0); //この名前は一個しかない予定
+    //let radioelm = Array(tgt_time.length/2);
+    for(i = 0; i < (tgt_time.length/2); i++) {
+        const radioelm = document.createElement("input");
+        radioelm.type = "radio";
+        radioelm.name = "timerange";
+        radioelm.id = "id_timerg_" + String(i);
+        radioelm.value = i;
+        //document.getElementById("lbid_timerg_" + String(i + 1)).innerText = datetimestr(tgt_time[i*2 + 1]) + " ～ " + datetimestr(tgt_time[i*2]);
+        const txtA = document.createTextNode(datetimestr(tgt_time[i*2 + 1]) + " ～ " + datetimestr(tgt_time[i*2]))
+        const labA = document.createElement("label");
+        labA.htmlFor = radioelm.id;
+        labA.appendChild(radioelm);
+        labA.appendChild(txtA);
+        formElement.appendChild(labA);
+    }
+
+    return new Promise(resolve => {
+        let nexturl = "";
+        let param_ptracks = 0;
+        let param_ptracksend = 0;
+        const eventBase = flag => () => {
+            document.getElementById("bs_dialog").close();
+            document.getElementById("bs_button-ok").removeEventListener("click", okEvent);
+            document.getElementById("bs_button-cancel").removeEventListener("click", cancelEvent);
+            document.getElementById("bs_button-changeurl").removeEventListener("click", chgurlEvent);
+            if (flag == "changeurl") {
+                //chgurlEventを受けて処理を書くのが一般的な気もするがまあいいか他の処理考えるのめんどくさいし
+                //url入力欄にurl突っ込んでリロードする処理
+                const  timerg_val = document.forms.popupForm.timerange.value;
+                if (timerg_val >= 0 && timerg_val <= Math.trunc(tgt_time.length / 2)) {
+                    let c_t2 = new Date();
+                    param_ptracks = c_t2.valueOf() - tgt_time[timerg_val*2 + 1].valueOf();
+                    param_ptracksend = c_t2.valueOf() - tgt_time[timerg_val*2].valueOf();
+                    param_ptracks = Math.round(param_ptracks / 1000 / 60 / 60 * 1000) / 1000; //ミリ秒を時間に変換(1000を掛けて割ってるのは有効桁の為)
+                    param_ptracksend = Math.round(param_ptracksend / 1000 / 60 / 60 * 1000) / 1000; //ミリ秒を時間に変換(1000を掛けて割ってるのは有効桁の為)
+                    nexturl = location.origin + location.pathname;
+                    if (nexturl.indexOf(".")) {
+                        nexturl = nexturl.substr(0, nexturl.lastIndexOf("/"));
+                    }
+                    if (nexturl[nexturl.length -1] != "/" ) {
+                        nexturl = nexturl + "/";
+                    }
+                    nexturl = nexturl + "?pTracks=" + param_ptracks + "&pTracksEnd=" + param_ptracksend;
+                } else {
+                }
+            }
+            //ラジオボタン関連の要素は上の処理までは必要なので、ここで消す（消さないと次回表示時に表示される為消去必須）
+            $("*[name=popupForm]").children().remove();
+            resolve(flag);
+            if (nexturl != "") {
+                if (trackLabels) {
+                    toggleTrackLabels(); //航跡に時間を出すと処理時間がかかるので、リロード前に外す
+                }
+                if (param_ptracks != 0 && param_ptracks > TraceHour) {
+                    TraceHour = Math.ceil(param_ptracks);
+                    localStorage.setItem('TraceHour', TraceHour);
+                }
+                //url文字列が設定されていればurl入力欄に張り付けてリロード
+                window.location.href = nexturl;
+            }
+        };
+        const okEvent = eventBase("ok");
+        const cancelEvent = eventBase("cancel");
+        const chgurlEvent = eventBase("changeurl");
+    
+        document.getElementById("bs_button-ok").addEventListener("click", okEvent);
+        document.getElementById("bs_button-cancel").addEventListener("click", cancelEvent);
+        document.getElementById("bs_button-changeurl").addEventListener("click", chgurlEvent);
+    });
+};
+
+//クリップボードにテキストをコピーする処理
+//こんな面倒とは思わなんだ
+//https://qiita.com/NOMURA_keibyou38/items/5dc2ea9419ea45a482da
+//よりcopyTextFallback, copyTemplate関数を一部改変
+
+// http環境で動くコピーコード
+function copyTextFallback (str) {
+    if (!str || typeof str !== 'string') {
+        return '';
+    }
+    const textarea = document.createElement('textarea');
+    textarea.id = 'tmp_copy';
+    textarea.style.position = 'fixed';
+    textarea.style.right = '100vw';
+    textarea.style.fontSize = '16px';
+    //元はこのコードだったが、このままだと呼ぶ場所を移動するとクリップボードにペーストできない
+    //不具合があった為、textarea.readOnly = true;に変更するとなぜか改善した
+    //textarea.setAttribute('readonly', 'readonly');
+    textarea.readOnly = true;
+    textarea.textContent = str;
+    document.body.appendChild(textarea);
+    const elm = document.getElementById('tmp_copy');
+    elm.select();
+    const range = document.createRange();
+    range.selectNodeContents(elm);
+    const sel = window.getSelection();
+    if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    elm.setSelectionRange(0, 999999);
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return str;
+}
+
+// メインのコピーコード
+function copyTemplate(copyText) {
+    if (!navigator.clipboard) {
+        // navigator.clipboardが利用的出来ない場合は、フォールバックなコードを実行
+        //https環境下だとここに落ちるらしい
+        copyTextFallback(copyText);
+        //alert(`${targetText}をコピーしました。`);
+        return;
+    }
+    // https環境で動作するコード
+    navigator.clipboard.writeText(copyText).then(
+        () => {
+            //結果は非同期で返ってくる：成功時の処理
+            //alert(`${targetText}をコピーしました。`);
+        },
+        () => {
+            //結果は非同期で返ってくる：失敗時の処理
+            //alert('コピーに失敗しました。');
+        }
+    );
+}
+
+//渡された位置が、嘉手納の設定緯度経度範囲内、設定高度以下の場合
+//嘉手納基地から離着陸した可能性があるのでtrueを返す
+function kd_reg_check(seg_point) {
+    let ret_val = false;
+    if (seg_point.altitude <= 1500) { //1500ft = 457.2m
+        if ((seg_point.position[0] >= 127.7176) && (seg_point.position[0] <= 127.8176)) {
+            if ((seg_point.position[1] >= 26.3054) && (seg_point.position[1] <= 26.4054)) {
+                ret_val = true;
+            }
+        }
+    }
+    return ret_val;
+}
+//渡された位置が、普天間の設定緯度経度範囲内、設定高度以下の場合
+//普天間基地から離着陸した可能性があるのでtrueを返す
+function ft_reg_check(seg_point) {
+    let ret_val = false;
+    if (seg_point.altitude <= 1500) { //1500ft = 457.2m
+        if ((seg_point.position[0] >= 127.7063) && (seg_point.position[0] <= 127.8063)) {
+            if ((seg_point.position[1] >= 26.2242) && (seg_point.position[1] <= 26.3242)) {
+                ret_val = true;
+            }
+        }
+    }
+    return ret_val;
+}
+
+
+//モーダルウィンドウ（ポップアップ）に引数の文字列を表示する
+//表示されたポップアップはポップアップの外（でもブラウザ上？）をクリックしたら消える
+function show_and_close_ModalWindow(strArgument) {
+    //モーダルを生成する→新しいタグを生成
+    const modalElement = document.createElement('div');
+    // 作ったdivの中にcss→modalを付与する
+    modalElement.classList.add('modalBo');
+    //モーダルウィンドウの中身を作る
+    //新しいdivタグを生成する
+    const innerElement = document.createElement('div');
+    //作ったdivの中にcss→innerを付与する
+    innerElement.classList.add('innerBo');
+    //表示したい文章をセット
+    innerElement.innerHTML = strArgument;
+    //モーダルの中身に要素を配置する
+    modalElement.appendChild(innerElement);
+    //body要素にモーダルを配置する
+    document.body.appendChild(modalElement);
+    //中身をクリックしたらモーダルウインドウを削除する
+    //innerElement.addEventListener('click',() => {
+    //  closeModalWindow(modalElement);
+    //});
+    //モーダルの外をクリックしたらモーダルウインドウを削除する
+    innerElement.parentNode.addEventListener('click', (event) => {
+        if (!innerElement.contains(event.target)) {
+            closeModalWindow(modalElement);
+        }
+    });
+    //モーダルウインドウを閉じる
+    function closeModalWindow(modalElement){
+      　　document.body.removeChild(modalElement);
+    }
+}
+
+//嘉手納、普天間発着機の可能性が高い航空機のリストを作り、対象の航空機を選択状態にする
+//作成したリストはポップアップ及びクリップボードに張り付ける
+function ListUpPlaneFromToMilAirport() {
+    let strTemp = "";
+    let mil_icao = [];
+    let i = 0;
+    let j = 0;
+    //嘉手納/普天間発着機のリストを作る
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        let target_flg = false;
+        const plane = g.planesOrdered[i];
+        if (plane.military == true || plane.visible == false || ( (("typeDescription" in plane) && plane.typeDescription !== null ) && plane.typeDescription.charAt(0) == 'H')) {
+            continue; //ヘリと軍用機と表にない人は対象外
+        }
+        for (j = plane.track_linesegs.length-1; j >= 0; j--) {
+            if (kd_reg_check(plane.track_linesegs[j])) {
+                target_flg = true;
+                break;
+            }
+            if (ft_reg_check(plane.track_linesegs[j])) {
+                target_flg = true;
+                break;
+            }
+        }
+        if (target_flg == true) {
+            mil_icao.push(plane.icao);
+        }
+    }
+    if (mil_icao.length > 0) {
+        strTemp = strTemp + "<br>";
+        if ( !multiSelect ) {
+            toggleMultiSelect( "on" );
+        }
+        for (i = 0; i < mil_icao.length; ++i) {
+            strTemp = strTemp + "<br>" + mil_icao[i];
+            let plane_temp = g.planes[mil_icao[i]];
+            if ("selected" in plane_temp) {
+                if (plane_temp.selected != true) {
+                    selectPlaneByHex(mil_icao[i], {follow: false});
+                }
+            } else {
+                selectPlaneByHex(mil_icao[i], {follow: false});
+            }
+        }
+    }
+    strTemp = strTemp + "<br>";
+    copyTemplate(strTemp.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
+}
+
+//twitter投稿用文字列を作成し、ダイアログとクリップボードに張り付ける
+//選択した航空機がある場合、時刻（ボタンをクリックした時間）の後に一番最初に選択した航空機から音の種類を類推して文字列に加える
+//選択した航空機がない場合、時刻の後には不明と文字列に加える
+//軍用機、複数選択した航空機が存在する場合、時間の行とタグの行の間に航空機のHexと（判明すれば）機種を加える
+async function Write_tweetstr() {
+    let strSound = "";
+    let model_name = "";
+    let type_str = "";
+    let pdata = [];
+    let mil_icao = [];
+    let mil_model = [];
+    let i = 0;
+    let plane_num = -1;
+    let today = new Date();
+    // 文字列としてURLを取得する。
+    let url_string = window.location.href;
+    // 文字列としてのURLをURLオブジェクトに変換する。
+    let url = new URL(url_string);
+    // URLオブジェクトのsearchParamsのget関数でIDがdの値を取得する。定義されていなければnullが返る
+    let icaohex = url.searchParams.get("icao");
+    //icaohex = icaohex.toUpperCase();
+    if ( icaohex != null) {
+        icaohex = icaohex.split(",");
+        for (i = 0; i < g.planesOrdered.length; ++i) {
+            const plane = g.planesOrdered[i];
+            if (plane.icao == icaohex[0]) {
+                pdata.push(plane.registration);
+                pdata.push(plane.icaoType);
+                pdata.push("not support");  //for compatibility, not used
+                pdata.push(plane.typeLong);
+                pdata.push(plane.typeDescription);
+                plane_num = i;
+                break;
+            }
+        }
+        if (pdata.length == 0){
+            icaohex[0] = "不明";
+        } else {
+            //ここに来る場合はg.planesOrderedに対象機が存在する
+            const plane = g.planesOrdered[i];
+            //model_name = get_aircraftmodelstr(plane.icao, plane.typeLong, plane.icaoType, plane.military);
+            model_name = get_aircraftmodelstr(plane);
+            if (pdata[4] != null) {
+                type_str = pdata[4];
+                if ((type_str.charAt(0) == 'L') || (type_str.charAt(0) == 'S') || (type_str.charAt(0) == 'A')
+                  || (type_str.charAt(0) == 'T') || (type_str.charAt(0) == 'R')) {  //なんでかAE4E53、V-22がR2Tで登録されている、Rは一文字目に無い筈なんだが
+                    if (type_str.charAt(2) == 'J'){
+                        strSound = "ジェット音、";
+                    } else if ((type_str.charAt(2) == 'T') || (type_str.charAt(2) == 'P')) {
+                        strSound = "プロペラ音、";
+                    }
+                } else if (type_str.charAt(0) == 'H'){
+                    strSound = "ヘリの音、";
+                }
+            } else {
+                strSound = "ジェット音、";
+            }
+        }
+        pdata.length = 0;
+    } else {
+        icaohex = [];
+        icaohex[0] = "不明";
+    }
+    //軍用機のリストを作る
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        const plane = g.planesOrdered[i];
+        if (((plane.military && plane.visible) || plane.selected) && (plane.icao != icaohex[0]) ) {
+            //visibleは表に在る、inViewはなんだろ？visibleがfalseでもinViewがtureがあるんだよ
+            mil_icao.push(plane.icao.toUpperCase());
+            model_name = get_aircraftmodelstr(plane);
+            mil_model.push(model_name);
+        }
+    }
+    let strTemp = TownName;
+    strTemp = strTemp + " " + String(today.getMonth()+1) + "/" +  String(today.getDate()) + "<br><br>";
+    strTemp = strTemp + today.getHours().toString().padStart(2, '0') + ":" + today.getMinutes().toString().padStart(2, '0') + " ";
+    if ((icaohex[0] == "不明") && (strSound.length == 0)) {
+        strTemp = strTemp + icaohex[0].toUpperCase();
+    } else {
+        strTemp = strTemp + strSound + icaohex[0].toUpperCase() + "、" + model_name;
+    }
+    if (mil_icao.length > 0) {
+        strTemp = strTemp + "<br>";
+        for (i = 0; i < mil_icao.length; ++i) {
+            strTemp = strTemp + "<br>" + mil_icao[i] + "、" + mil_model[i];
+        }
+    }
+    strTemp = strTemp + "<br><br>#OHアラート";
+    copyTemplate(strTemp.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
+}
+
+//以下の２機能をまとめたもの
+//１．グローバル変数g.planesOrderedの中身を、内部配列に格納する
+//　　配列の先頭行はg.planesOrderedの連想配列のキー名（一番キーの数が多いものを探して表示している）
+//　　二行目以降はg.planesOrderedの配列の先頭からキー値を格納、ないものは空欄だっけ？
+//　　（各配列(g.planesOrdered[]の事)のキーの数がバラバラなのでいったん配列に格納することで比較しやすくした
+//２．三択ダイアログで以下の動作を行う
+//　　OK：表に表示されている航空機をすべて選択状態にする。（Uボタン押下、Filteringなどで表に出る航空機を減らして使うことを想定）
+//　　　　１．で作成した内部配列をcsv形式でダイアログとクリップボードに書き出す
+//　　Cansel：１．で作成した内部配列をcsv形式でダイアログとクリップボードに書き出す（航空機を選択状態にしないのがOKとの差分）
+//　　Chg URL：４つの選択肢に示した時間帯をブラウザのURL欄に書き、それを表示させる
+async function SelectTablesPlane_or_DispPlaneTimeslot() {
+    let strTemp = "";
+    let i = 0;
+    let j = 0;
+
+    //グローバルにある航空機のリストを作る
+    let key_count = 0;
+    let pointer = 0;
+    for (i = 0; i < g.planesOrdered.length; ++i) { //まず一番メンバが多い人を探す
+        if (Object.keys(g.planesOrdered[i]).length > key_count) {
+            key_count = Object.keys(g.planesOrdered[i]).length;
+            pointer = i;
+        }
+    }
+    //g.planesOrderedの各値を格納する配列の宣言
+    //適当な例が見つからなかったもので
+    let a_keyname = new Array(g.planesOrdered.length + 1);
+    a_keyname[0] = new Array(key_count);
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        a_keyname[i+1] = new Array(key_count);
+    }
+    i = 0;
+    if (g.planesOrdered.length > 0) {
+        Object.keys(g.planesOrdered[pointer]).forEach(key => {
+            a_keyname[0][i] = key; //連想配列のキーの名前を配列の0行目に突っ込む
+            i++;
+        });
+    }
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        let count = 0;
+        let strline = "";
+        let value;
+        let planedata = g.planesOrdered[i];
+        for (j = 0; j < key_count; j++) { 
+            if (a_keyname[0][j] in planedata) {
+                value = planedata[a_keyname[0][j]];
+            } else {
+                value ="";
+            }
+            let str = "";
+            if (typeof(value) == "object") {
+                if (Array.isArray(value)) {
+                    str = "#o";
+                } else {
+                    str = String(value);
+                }
+            } else if (typeof(value) == "function") {
+                str = "#f";
+            } else if (Array.isArray(value)) {
+                str = "#a";
+            } else {
+                str = String(value);
+            }
+            if (str.indexOf("\n") > -1) str = "aaa";
+            if (str.indexOf("[") > -1) str = "#o";
+            if (str.indexOf(",") > -1) str = "#a";
+            if (str == "unknown") str = "#uk";
+            if (str == "undefined") str = "#ud";
+            strline = strline + str + ",";
+            if ( (typeof(str) != "string") || (str.length == 0) ) {
+                str = "a";
+            }
+            a_keyname[i+1][j] = str;
+            count++;
+        };// 値のみ出力
+    }
+    for (i = 0; i < g.planesOrdered.length + 1; ++i) {
+        for (j = 0; j < key_count; j++) {
+            strTemp = strTemp + a_keyname[i][j] + ",";
+        }
+        strTemp = strTemp + "<br>";
+    }
+    strTemp = strTemp + "<br><br><br>";
+    let htmlTable = document.getElementById('planesTable');
+    for( i = 0; i < htmlTable.rows.length; ++i) {
+        let cells = htmlTable.rows[ i ].cells;
+        for( j = 0; j < cells.length; j++ ) {
+            strTemp = strTemp + cells[ j ].textContent + ",";
+        }
+        strTemp = strTemp + "<br>";
+    }
+    let str_arg = "グローバル変数g.planesOrdered連想配列の内容、および画面右の表を<br>クリップボードにコピーしました。<br><br>続いて現在表に記載されている<br>　「 "
+                  + String(htmlTable.rows.length - 1) + " 」機 を選択状態にしますか？"
+    if (await confirmAsync(str_arg)  == "ok") {
+        for( i = 1; i < htmlTable.rows.length; ++i) {
+            if ( !multiSelect ) {
+                toggleMultiSelect( "on" );
+            }
+            let hex_str = htmlTable.rows[ i ].cells[ 0 ].textContent;
+            let plane_temp = g.planes[hex_str];
+            if ("selected" in plane_temp) {
+                if (plane_temp.selected != true) {
+                    selectPlaneByHex(hex_str, {follow: false});
+                }
+            } else {
+                selectPlaneByHex(hex_str, {follow: false});
+            }
+        }
+    } else {
+        //alert("キャンセルが押されました。");
+    }
+    //クリップボードに調査用データをコピー
+    let strClipBoard = strTemp;
+    copyTemplate(strClipBoard.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
+}
+//ins-e add 通報簡略化 param by oki098972
 parseURLIcaos();
 initialize();
