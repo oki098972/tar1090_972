@@ -9592,6 +9592,52 @@ async function SelectTablesPlane_or_DispPlaneTimeslot() {
 }
 //ins-e add 通報簡略化 param by oki098972
 //ins-s add 型番未定義Hexを補う param by oki098972
+//情報元：https://qiita.com/masa_masa_ra/items/983007389776123757f5
+//CSVファイルを読み込む関数getCSV()の定義
+function getCSV() {
+    return new Promise((resolve, reject) => {
+        let req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成、サーバと非同期通信するためのAPI
+        req.open("get", "loc_mil_db.csv", true); // アクセスするファイルを指定
+        req.onload = () => {
+            if (req.readyState === 4 && req.status === 200) {
+                resolve(convertCSVtoArray(req.responseText));
+            } else {
+                reject(new Error(req.statusText));
+            }
+        };
+        req.onerror = () => {
+          reject(new Error(req.statusText));
+        };
+        req.send(null); // HTTPリクエストの発行
+    });
+}
+// 読み込んだCSVデータを二次元配列に変換する関数convertCSVtoArray()の定義
+function convertCSVtoArray(str){ // 読み込んだCSVデータが文字列として渡される
+    let result = []; // 最終的な二次元配列を入れるための配列
+    let tmp = str.split("\n"); // 改行を区切り文字として行を要素とした配列を生成
+    // 各行ごとにカンマで区切った文字列を要素とした二次元配列を生成
+    for(let i=0;i<tmp.length;++i){
+        result[i] = tmp[i].split(',');
+    }
+    return result;
+}
+async function load_locdeftable() {
+    
+    //csvファイルの読み込み
+    loc_def_tbl_data = await getCSV();
+}
+function serch_local_def_table(str) {
+    let result = 'N/A';
+    for(let i = 0; i < loc_def_tbl_data.length ; i++) {
+        if (loc_def_tbl_data[i][0] == str) {
+            return loc_def_tbl_data[i][2]
+        }
+    }
+    return result;
+}
+//ins-e add 型番未定義Hexを補う param by oki098972
+
+//ins-s add 型番未定義Hexを補う param by oki098972
 load_locdeftable();
 //ins-e add 型番未定義Hexを補う param by oki098972
 parseURLIcaos();
