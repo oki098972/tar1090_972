@@ -461,7 +461,10 @@ select.error, textarea.error, input.error {
 #header_side {
     position: absolute;
     right: calc( 0px * var(--SCALE));
-    top:  calc( 0px * var(--SCALE));
+/* chg-s move map select button by oki098972 */
+    /* top:  calc( 0px * var(--SCALE)); */
+    top:  150px;
+/* chg-e move map select button by oki098972 */
     width: calc( 38px * var(--SCALE));
     z-index: 9;
 }
