@@ -480,6 +480,41 @@ select.error, textarea.error, input.error {
     z-index: 9;
 }
 
+/* ins-s add clock param by oki098972 */
+//#header_top_time {
+//    text-align: right;
+//    vertical-align: bottom;
+//    position: absolute;
+//    width: 300px;
+//    right: calc( 200px * var(--SCALE));
+//    top: calc( 0px * var(--SCALE));
+//    height: calc( 38px * var(--SCALE));
+//    z-index: 9;
+//}
+
+.bClockText
+{
+    font-weight: normal;
+    /* width: 140px; */
+    width: calc( 160px * var(--SCALE));
+    font-size: calc( 15px * var(--SCALE));
+    line-height:  calc( 27px * var(--SCALE));
+    text-align: center;
+    margin: calc( 5px * var(--SCALE));
+    color:#fff;
+    /* à»â∫ÇÕ.buttonÇ©ÇÁó¨óp */
+    background-color: var(--ACCENT);
+    /* è„Ç≈éwíË width: calc( 27px * var(--SCALE)); */
+    height: calc( 27px * var(--SCALE));
+    border-radius: calc( 2px * var(--SCALE));
+    margin: calc( 2px * var(--SCALE));
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    background-clip: padding-box;
+}
+/* ins-e add clock param by oki098972 */
+
 .svgButton {
     background-color: var(--ACCENT);
     width: calc( 27px * var(--SCALE));
