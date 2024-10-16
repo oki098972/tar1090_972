@@ -2884,6 +2884,19 @@ function initMap() {
         }
     });
 
+//ins-s force display aircraft labels by oki098972
+    new Toggle({
+        key: "fdispLabels",
+        display: "ラベルを強制表示する",
+        container: "#settingsLeft",
+        init: false,
+        setState: function(state) {
+            fdispLabels = state;
+            remakeTrails();
+        }
+    });
+//ins-e force display aircraft labels by oki098972
+
     window.addEventListener('keydown', function(e) {
         active();
         if (e.defaultPrevented ) {
