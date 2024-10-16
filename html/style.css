@@ -102,13 +102,21 @@ select {
 }
 
 .sidebar_button {
+/* chg-s move button by oki098972 */
+    //width: calc( 32px * var(--SCALE));
+    //height: calc( 38px * var(--SCALE));
+    //border-radius: calc( 2px * var(--SCALE));
+    //ボタンをウィンドウ右端に飛ばしたのでリサイズ止めた;
     width: calc( 32px * var(--SCALE));
     height: calc( 38px * var(--SCALE));
     border-radius: calc( 2px * var(--SCALE));
+/* chg-e move button by oki098972 */
     background-color: rgba(255,255,255,.2);
 
     cursor: pointer;
+move button by oki098972
     background-size: calc( 26px * var(--SCALE)) calc( 30px * var(--SCALE));
+/* chg-e move button by oki098972 */
     background-repeat: no-repeat;
     background-position: center;
 
@@ -173,9 +181,14 @@ select {
     top:  calc( 5px * var(--SCALE));
     left: calc( 0px * var(--SCALE));
     float: right;
-    width: calc( 30px * var(--SCALE));
-    height: calc( 30px * var(--SCALE));
-    background-size: calc( 30px * var(--SCALE)) calc( 30px * var(--SCALE));
+/* chg-s  by oki098972 */
+    //width: calc( 30px * var(--SCALE));
+    //height: calc( 30px * var(--SCALE));
+    //background-size: calc( 30px * var(--SCALE)) calc( 30px * var(--SCALE));
+    width: calc( 34px * var(--SCALE));
+    height: calc( 34px * var(--SCALE));
+    background-size: calc( 34px * var(--SCALE)) calc( 34px * var(--SCALE));
+/* chg-e move button by oki098972 */
     background-repeat: no-repeat;
     background-color: transparent;
     border: none;
@@ -441,7 +454,10 @@ select.error, textarea.error, input.error {
 #header_top {
     text-align: right;
     position: absolute;
-    right: calc( 94px * var(--SCALE));
+/* chg-s move button by oki098972 */
+    /* right: calc( 94px * var(--SCALE)); */
+    right: calc( 4px * var(--SCALE));
+/* chg-e move button by oki098972 */
     top: calc( 0px * var(--SCALE));
     height: calc( 38px * var(--SCALE));
     z-index: 9;
