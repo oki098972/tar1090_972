@@ -2024,8 +2024,12 @@ PlaneObject.prototype.updateLines = function() {
             }
 
             let text =
-                speedString.padStart(3, NBSP) + "  "
+//chg-s add 速度高度を二行で表示 by oki098972
+                //speedString.padStart(3, NBSP) + "  "
+                //+ altString.padStart(6, NBSP)
+                speedString.padStart(3, NBSP) + "\n"
                 + altString.padStart(6, NBSP)
+//chg-e add 速度高度を二行で表示 by oki098972
                 + "\n"
                 //+ NBSP + format_track_arrow(seg.track)
                 + timestamp1 + timestamp2;
@@ -2065,6 +2069,9 @@ PlaneObject.prototype.updateLines = function() {
                         font: labelFont,
                         offsetX: (otherDiag ? 4 : 8) * globalScale,
                         offsetY: (otherDiag ? -4 : 8) * globalScale,
+//chg-s 航跡に出す文字を減らす by oki098972
+                        padding: [10, 0, 10, 0],
+//chg-e 航跡に出す文字を減らす by oki098972
                     }),
                     image: new ol.style.Circle({
                         radius: 2 * globalScale,
