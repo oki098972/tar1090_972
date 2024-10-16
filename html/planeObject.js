@@ -976,10 +976,17 @@ PlaneObject.prototype.updateIcon = function() {
                     text: labelText,
                     fill: labelFill,
                     backgroundFill: bgFill,
-                    stroke: labelStrokeNarrow,
+//chg-s 航跡に出す文字を小さくする by oki098972
+                    //stroke: labelStrokeNarrow,
+                    stroke: labelStrokeNarrow2,
+//chg-e 航跡に出す文字を小さくする by oki098972
                     textAlign: 'left',
                     textBaseline: labels_top ? 'bottom' : 'top',
-                    font: labelFont,
+//chg-s 航跡に出す文字を小さくする by oki098972
+                    //font: labelFont,
+                    font: labelFont2,
+                    opacity: 1,
+//chg-e 航跡に出す文字を小さくする by oki098972
                     offsetX: (this.shape.w *0.5*0.74*this.scale),
                     offsetY: labels_top ? (this.shape.w *-0.3*0.74*this.scale) : (this.shape.w *0.5*0.74*this.scale),
                     padding: [1, 0, -1, 2],
@@ -2029,7 +2036,10 @@ PlaneObject.prototype.updateLines = function() {
             if (showTrace && !trackLabels)
                 text = timestamp1 + timestamp2;
 
-            let fill = labelFill;
+//chg-s 航跡に出す文字を小さくする by oki098972
+            //let fill = labelFill;
+            let fill = blackFill;
+//chg-e 航跡に出す文字を小さくする by oki098972
             let zIndex = -i - 50 * (seg.alt_real == null);
             if (seg.leg == 'start') {
                 fill = new ol.style.Fill({color: '#88CC88' });
@@ -2045,7 +2055,10 @@ PlaneObject.prototype.updateLines = function() {
                     text: new ol.style.Text({
                         text: `${text}`,
                         fill: fill,
-                        stroke: labelStroke,
+//chg-s 航跡に出す文字を小さくする by oki098972
+                        //stroke: labelStroke,
+                        //stroke: labelStrokeNarrow,
+//chg-e 航跡に出す文字を小さくする by oki098972
                         textAlign: 'left',
                         //backgroundFill: bgFill,
                         textBaseline: otherDiag ? 'bottom' : 'top',
