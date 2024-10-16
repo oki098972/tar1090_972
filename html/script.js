@@ -189,6 +189,10 @@ let badDotMlat;
 
 let showingReplayBar = false;
 
+//ins-s add 型番未定義Hexを補う param by oki098972
+let loc_def_tbl_data=[];
+//ins-e add 型番未定義Hexを補う param by oki098972
+
 function processAircraft(ac, init, uat) {
     const isArray = Array.isArray(ac);
     const hex = isArray ? ac[0] : ac.hex;
@@ -9587,5 +9591,8 @@ async function SelectTablesPlane_or_DispPlaneTimeslot() {
     show_and_close_ModalWindow(strTemp);
 }
 //ins-e add 通報簡略化 param by oki098972
+//ins-s add 型番未定義Hexを補う param by oki098972
+load_locdeftable();
+//ins-e add 型番未定義Hexを補う param by oki098972
 parseURLIcaos();
 initialize();
