@@ -4044,9 +4044,22 @@ function refreshFeatures() {
         value: function(plane) { return (plane.position != null ? plane.position[0].toFixed(4) : ""); },
         align: 'right' };
     cols.data_source = {
-        text: 'Source',
+//chg-s Last catch time by oki098972
+        //text: 'Source',
+        text: 'Src'+ ' / Last',
+        header: function () { return 'Src'+ '<BR>' + '/Last';},
+//chg-e Last catch time by oki098972
         sort: function () { sortBy('data_source', compareNumeric, function(x) { return x.getDataSourceNumber(); } ); },
-        value: function(plane) { return format_data_source(plane.getDataSource()); },
+//chg-s Last catch time by oki098972
+        //value: function(plane) { return format_data_source(plane.getDataSource()); },
+        value: function(plane) {
+            if (pTracks) {
+                return ConvUnixMSecToHourMinStr(pTracksCurrentTime - (Number(plane.seen.toFixed(0)) + (pTracksEnd ? pTracksEnd * 3600 : 0)) * 1000);
+            } else {
+                return format_data_source(plane.getDataSource());
+            }
+        },
+//chg-e Last catch time by oki098972
         align: 'right' };
     cols.military = {
         text: 'Mil.',
