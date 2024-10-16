@@ -368,8 +368,14 @@ select.error, textarea.error, input.error {
 }
 
 .layer-switcher {
+/* chg-s move layer-switcher by oki098972 */
+    /* top: calc( 3px * var(--SCALE)) !important; */
+    /* right: calc( 44px * var(--SCALE)) !important; */
     top: calc( 3px * var(--SCALE)) !important;
-    right: calc( 44px * var(--SCALE)) !important;
+    /* left: 200px !important; */
+    /* right: 340px !important; */
+    left: 180px !important;
+/* chg-e move layer-switcher by oki098972 */
     z-index: 999;
 }
 .layer-switcher button {
@@ -380,8 +386,12 @@ select.error, textarea.error, input.error {
     height: calc( 30px * var(--SCALE));
 }
 .layer-switcher !.shown {
+/* chg-s move layer-switcher by oki098972 */
+    /* top: calc( 3px * var(--SCALE)) !important; */
+    /* right: calc( 44px * var(--SCALE)) !important; */
     top: calc( 3px * var(--SCALE)) !important;
-    right: calc( 44px * var(--SCALE)) !important;
+    left: 44px !important;
+/* chg-e move layer-switcher by oki098972 */
     width: calc( 32px * var(--SCALE));
     height: calc( 32px * var(--SCALE));
     z-index: 999;
