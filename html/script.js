@@ -7022,6 +7022,9 @@ function remakeTrails() {
 
 function createLocationDot() {
     locationDotFeatures.clear();
+//ins-s don't show site position by oki098972
+    return;
+//ins-e don't show site position by oki098972
     let markerStyle = new ol.style.Style({
         image: new ol.style.Circle({
             radius: 7,
@@ -7041,6 +7044,9 @@ function drawSiteCircle() {
     //console.trace();
     siteCircleFeatures.clear();
 
+//ins-s don't show site position by oki098972
+    return;
+//ins-e don't show site position by oki098972
     if (!SitePosition)
         return;
 
