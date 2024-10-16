@@ -845,12 +845,21 @@ PlaneObject.prototype.updateIcon = function() {
         )
     ) {
         let callsign = "";
-        if (this.flight && this.flight.trim())
-            callsign =  this.flight.trim();
-        else if (this.registration)
-            callsign =  'reg: ' + this.registration;
-        else
-            callsign =   'hex: ' + this.icao;
+//chg-s Aircraft Label always ICAO code by oki098972
+        //if (this.flight && this.flight.trim())
+        //    callsign =  this.flight.trim();
+        //else if (this.registration)
+        //    callsign =  'reg: ' + this.registration;
+        //else
+        //    callsign =   'hex: ' + this.icao;
+        callsign = this.icao.toUpperCase();
+//chg-e Aircraft Label always ICAO code by oki098972
+//ins-s Aircraft Label always ICAO code by oki098972
+        let tmp_typestr = 'N/A';
+        //tmp_typestr = get_aircraftmodelstr(this.icao, this.typeLong, this.icaoType, this.military);
+        tmp_typestr = get_aircraftmodelstr(this);
+        callsign += '\n' + tmp_typestr;
+//ins-e Aircraft Label always ICAO code by oki098972
         if (useRouteAPI && this.routeString)
             callsign += ' - ' + this.routeString;
 
@@ -2996,3 +3005,43 @@ function normalizeTraceStamps(data) {
     data.timestamp = 0;
     return data;
 }
+//ins-s Aircraft Label always ICAO code by oki098972
+function get_aircraftmodelstr(arg_plane) {
+    const regex_str = /[A-Z]{1,3}\-[0-9]{1,3}[A-Z].*/;
+    let str_tmp = 'N/A';
+    //debug code
+    if (arg_plane.icao == "ae5a99") {
+        str_tmp = 'aa'
+        str_tmp = 'N/A';
+    }
+    //debug code
+    if (arg_plane.typeLong != null) {
+        let array_typestr = arg_plane.typeLong.split(' ');
+        for (let i = 0; i < array_typestr.length; i++) {
+            if (array_typestr[i].toUpperCase().indexOf("MCDONNELL") !== -1) {
+                //社名が入ってるので除外
+                continue;
+            }
+            if (array_typestr[i].toUpperCase().indexOf("BOEING") !== -1) {
+                //社名が入ってるので除外
+                continue;
+            }
+            if (array_typestr[i].search(/[\-]/) != -1) {
+                //ダッシュがあればそれを型名とする
+                str_tmp = array_typestr[i];
+                break;
+            }
+        }
+    }
+    if (str_tmp == 'N/A' || (!arg_plane.military && arg_plane.military == true && !(regex_str.test(str_tmp))))
+    { //型番ヒットせずor軍用機の型番の形式を満たしていない場合はローカルDBを検索する
+        str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
+    }
+
+    if (str_tmp == 'N/A') {
+        if (arg_plane.icaoType) str_tmp = arg_plane.icaoType;
+    }
+    
+    return str_tmp;
+}
+//ins-e Aircraft Label always ICAO code by oki098972
