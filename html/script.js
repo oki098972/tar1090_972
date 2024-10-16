@@ -1939,6 +1939,12 @@ function parseHistory() {
             if (g.refreshHistory && now > data.now) {
                 continue;
             }
+//ins-s add pTracks start param by oki098972
+            //pTracksEndが与えられていたら以降のデータははじく
+            if (pTracksEnd && currentTime - data.now < pTracksEnd * 3600) {
+                continue;
+            }
+//ins-e add pTracks start param by oki098972
 
             // process new data
             if (PositionHistoryBuffer.length < 10) {
@@ -4185,6 +4191,22 @@ function refreshFeatures() {
 
         ctime && console.timeEnd("planeMan.refresh()");
         atime && console.timeEnd("planeMan.refresh()");
+//ins-s add pTracks start param by oki098972
+        let loc_str = "";
+        let loc_time = false;
+        if (pTracks) {
+            loc_time = pTracksCurrentTime - pTracks * 3600 * 1000;
+            loc_str = new Date(loc_time).toLocaleString("ja");
+            if (pTracksEnd) {
+                loc_time = pTracksCurrentTime - pTracksEnd * 3600 * 1000;
+            } else {
+                loc_time = pTracksCurrentTime;
+            }
+            loc_str += "～";
+            loc_str += new Date(loc_time).toLocaleTimeString("ja");
+        }
+        document.getElementById("add_sp_time").innerHTML = loc_str;
+//ins-e add pTracks start param by oki098972
     }
 
     //
