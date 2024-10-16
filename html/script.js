@@ -3724,18 +3724,48 @@ function refreshHighlighted() {
     let mapSize = OLMap.getSize();
     let infoBoxLeft = markerPosition[0];
     let infoBoxTop = markerPosition[1];
-    if ((infoBoxLeft + 20 + infoBox.width()) < mapSize[0])
-        infoBoxLeft += 20;
-    else if ((infoBoxLeft - 20 - infoBox.width()) > 0)
-        infoBoxLeft -= (20 + infoBox.width());
-    else
-        infoBoxLeft = 0;
-    if ((infoBoxTop + 20 + infoBox.height()) < mapSize[1])
-        infoBoxTop += 20;
-    else if (infoBoxTop - (20 + infoBox.height()) > 0)
-        infoBoxTop -= (20 + infoBox.height());
-    else
-        infoBoxTop = 0;
+/* chg-s reduce hover dialog box size by oki098972 */
+    //if ((infoBoxLeft + 20 + infoBox.width()) < mapSize[0])
+    //    infoBoxLeft += 20;
+    //else if ((infoBoxLeft - 20 - infoBox.width()) > 0)
+    //    infoBoxLeft -= (20 + infoBox.width());
+    //else
+    //    infoBoxLeft = 0;
+    //if ((infoBoxTop + 20 + infoBox.height()) < mapSize[1])
+    //    infoBoxTop += 20;
+    //else if (infoBoxTop - (20 + infoBox.height()) > 0)
+    //    infoBoxTop -= (20 + infoBox.height());
+    //else
+    //    infoBoxTop = 0;
+  {
+    let elements_hp = document.getElementsByName('hover_position');
+    let len_hp = elements_hp.length;
+    let val_hp = '';
+    for (let i = 0; i < len_hp; i++){
+        if (elements_hp.item(i).checked){
+            val_hp = elements_hp.item(i).value;
+        }
+    }
+    switch (val_hp) {
+      case 'h_LU': //左上
+        infoBoxLeft -= (15 + infoBox.width());
+        infoBoxTop -= (15 + infoBox.height());
+        break;
+      case 'h_LD': //左下
+        infoBoxLeft -= (15 + infoBox.width());
+        infoBoxTop += 15;
+        break;
+      case 'h_RU': //右上
+        infoBoxLeft += 15;
+        infoBoxTop -= (15 + infoBox.height());
+        break;
+      default: //デフォルトは右下
+        infoBoxLeft += 10;
+        infoBoxTop += 10;
+        break;
+    }
+  }
+/* chg-e reduce hover dialog box size by oki098972 */
     infoBox.css("left", infoBoxLeft);
     infoBox.css("top", infoBoxTop);
 
