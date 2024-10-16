@@ -832,7 +832,10 @@ PlaneObject.prototype.updateIcon = function() {
     let svgKey  = fillColor + '!' + this.shape.name + '!' + this.strokeWidth;
     let labelText = null;
 
-    if ( enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
+//chg-s force display aircraft labels by oki098972
+    //if ( enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
+    if ( fdispLabels || enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
+//chg-e force display aircraft labels by oki098972
         (
             (zoomLvl >= labelZoom && this.altitude != "ground" && this.dataSource != "ais")
             || (zoomLvl >= labelZoomGround - 2 && this.speed > 5 && !this.fakeHex)
