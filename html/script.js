@@ -3916,13 +3916,19 @@ function refreshFeatures() {
         sort: function () { sortBy('registration', compareAlpha, function(x) { return x.registration; }); },
         value: function(plane) { return (flightawareLinks ? getFlightAwareIdentLink(plane.registration, plane.registration) : (plane.registration ? plane.registration : "")); },
         html: flightawareLinks,
-        text: 'Registration' };
+//chg-s Change Layout by oki098972
+        //text: 'Registration' };
+        text: 'Reg.' };
+//chg-e Change Layout by oki098972
     cols.aircraft_type = {
         sort: function () { sortBy('type', compareAlpha, function(x) { return x.icaoType; }); },
         value: function(plane) { return (plane.icaoType != null ? plane.icaoType : ""); },
         text: 'Type' };
     cols.squawk = {
-        text: 'Squawk',
+//chg-s Change Layout by oki098972
+        //text: 'Squawk',
+        text: 'Sqwk',
+//chg-e Change Layout by oki098972
         sort: function () { sortBy('squawk', compareAlpha, function(x) { return x.squawk; }); },
         value: function(plane) { return (plane.squawk != null ? plane.squawk : ""); },
         align: 'right' };
@@ -3931,14 +3937,20 @@ function refreshFeatures() {
         sort: function () { sortBy('altitude',compareNumeric, function(x) { return (x.altitude == "ground" ? -100000 : x.altitude); }); },
         value: function(plane) { return format_altitude_brief(adjust_baro_alt(plane.altitude), plane.vert_rate, DisplayUnits); },
         align: 'right',
-        header: function () { return 'Alt.' + NBSP + '(' + get_unit_label("altitude", DisplayUnits) + ')';},
+//chg-s Change Layout by oki098972
+        //header: function () { return 'Alt.' + NBSP + '(' + get_unit_label("altitude", DisplayUnits) + ')';},
+        header: function () { return 'Alt.' + '<BR>' + '(' + get_unit_label("altitude", DisplayUnits) + ')';},
+//chg-e Change Layout by oki098972
     };
     cols.speed = {
         text: pTracks ? 'Max. Speed' : 'Speed',
         sort: function () { sortBy('speed', compareNumeric, function(x) { return x.speed; }); },
         value: function(plane) { return format_speed_brief(plane.speed, DisplayUnits); },
         align: 'right',
-        header: function () { return (pTracks ? 'Max. ' : '') + 'Spd.' + NBSP + '(' + get_unit_label("speed", DisplayUnits) + ')';},
+//chg-s Change Layout by oki098972
+        //header: function () { return (pTracks ? 'Max. ' : '') + 'Spd.' + NBSP + '(' + get_unit_label("speed", DisplayUnits) + ')';},
+        header: function () { return (pTracks ? 'M. ' : '') + 'Spd.' + '<BR>' + '(' + get_unit_label("speed", DisplayUnits) + ')';},
+//chg-e Change Layout by oki098972
     };
     cols.vert_rate = {
         text: 'Vertical Rate',
@@ -3952,7 +3964,10 @@ function refreshFeatures() {
         sort: function () { sortBy('sitedist',compareNumeric, function(x) { return x.sitedist; }); },
         value: function(plane) { return format_distance_brief(plane.sitedist, DisplayUnits); },
         align: 'right',
-        header: function () { return (pTracks ? 'Max. ' : '') + 'Dist.' + NBSP + '(' + get_unit_label("distance", DisplayUnits) + ')';},
+//chg-s Change Layout by oki098972
+        //header: function () { return (pTracks ? 'Max. ' : '') + 'Dist.' + NBSP + '(' + get_unit_label("distance", DisplayUnits) + ')';},
+        header: function () { return (pTracks ? 'M. ' : '') + 'Dist.' + '<BR>' + '(' + get_unit_label("distance", DisplayUnits) + ')';},
+//chg-e Change Layout by oki098972
     };
     cols.track = {
         text: 'Track',
@@ -3960,14 +3975,20 @@ function refreshFeatures() {
         value: function(plane) { return format_track_brief(plane.track); },
         align: 'right' };
     cols.msgs = {
-        text: 'Messages',
+//chg-s Change Layout by oki098972
+        //text: 'Messages',
+        text: 'Msgs',
+//chg-e Change Layout by oki098972
         sort: function () { sortBy('msgs', compareNumeric, function(x) { return x.messages; }); },
         value: function(plane) { return plane.messages; },
         align: 'right' };
     cols.seen = {
         text: 'Seen',
         sort: function () { sortBy('seen', compareNumeric, function(x) { return x.seen; }); },
-        value: function(plane) { return plane.seen.toFixed(0); },
+//chg-s Change Layout by oki098972
+//        value: function(plane) { return plane.seen.toFixed(0); },
+        value: function(plane) { return Number(plane.seen.toFixed(0)) + Math.round(pTracksEnd ? pTracksEnd * 3600 : 0); },
+//chg-e Change Layout by oki098972
         align: 'right' };
     cols.rssi = {
         text: 'RSSI',
@@ -4743,7 +4764,10 @@ function adjustInfoBlock() {
 
     if (showPictures) {
         if (planespottersAPI || planespottingAPI) {
-            jQuery('#photo_container').css('height', photoWidth * 0.883 + 'px');
+//chg-s Change Layout by oki098972
+            //jQuery('#photo_container').css('height', photoWidth * 0.883 + 'px');
+            jQuery('#photo_container').css('height', photoWidth * 0.700 + 'px');
+//chg-e Change Layout by oki098972
         } else {
             jQuery('#photo_container').css('height', '40px');
         }
