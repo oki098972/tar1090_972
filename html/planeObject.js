@@ -1945,8 +1945,22 @@ PlaneObject.prototype.updateLines = function() {
 
     // create any missing fixed line features
 
+//ins-s add TraceHour param by oki098972
+    let currentTime = new Date().getTime()/1000;
+    let tmp_hour;
+    if ( TraceHour ) {
+        tmp_hour = TraceHour;
+    } else {
+        tmp_hour = Number(8);
+    }
+//ins-e add TraceHour param by oki098972
     for (let i = this.track_linesegs.length-1; i >= 0; i--) {
         let seg = this.track_linesegs[i];
+//ins-s add TraceHour param by oki098972
+        if (currentTime - seg.ts > tmp_hour * 3600) { //TraceHour(単位は時間)より前のデータは捨てる
+            continue;
+        }
+//ins-e add TraceHour param by oki098972
         if (seg.feature && (!trackLabels || seg.label))
             break;
 
