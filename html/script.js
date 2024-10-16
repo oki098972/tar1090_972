@@ -105,6 +105,9 @@ let labelFill = null;
 let blackFill = null;
 let labelStroke = null;
 let labelStrokeNarrow = null;
+//ins-s 航跡に出す文字を小さくする by oki098972
+let labelStrokeNarrow2 = null;
+//ins-e 航跡に出す文字を小さくする by oki098972
 let bgFill = null;
 let legSel = -1;
 let geoMag = null;
@@ -5524,7 +5527,18 @@ function setGlobalScale(scale, init) {
     globalScale = scale;
     document.documentElement.style.setProperty("--SCALE", globalScale);
 
-    labelFont = "bold " + (12 * globalScale * labelScale) + "px/" + (14 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+//chg-s 航跡に出す文字を小さくする by oki098972
+    //labelFont = "bold " + (12 * globalScale * labelScale) + "px/" + (14 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    //labelFont = "bold " + (10 * globalScale * labelScale) + "px/" + (11 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    //labelFont = "bold " + (9 * globalScale * labelScale) + "px/" + (10 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    //use before 2023/09/15 labelFont = "normal " + (9 * globalScale * labelScale) + "px/" + (10 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    labelFont = "normal " + (10.5 * globalScale * labelScale) + "px/" + (9.75 * globalScale * labelScale) + "px Arial";
+//chg-e 航跡に出す文字を小さくする by oki098972
+//chg-s ラベルに出す文字を小さくする by oki098972
+    //labelFont2 = "bold " + (13 * globalScale * labelScale) + "px/" + (14 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    //labelFont2 = "normal " + (11 * globalScale * labelScale) + "px/" + (11.5 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    labelFont2 = "normal " + (12 * globalScale * labelScale) + "px/" + (13 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+//chg-e ラベルに出す文字を小さくする by oki098972
 
     checkScale();
     setLineWidth();
@@ -6661,7 +6675,14 @@ function setLineWidth() {
     labelFill = new ol.style.Fill({color: 'white' });
     blackFill = new ol.style.Fill({color: 'black' });
     labelStroke = new ol.style.Stroke({color: 'rgba(0,0,0,0.7', width: 4 * globalScale});
-    labelStrokeNarrow = new ol.style.Stroke({color: 'rgba(0,0,0,0.7', width: 2.5 * globalScale});
+//chg-s 航跡に出す文字を小さくする by oki098972
+    //labelStrokeNarrow = new ol.style.Stroke({color: 'rgba(0,0,0,0.7', width: 2.5 * globalScale});
+    labelStrokeNarrow = new ol.style.Stroke({color: 'rgba(0,0,0,1', width: 4 * globalScale});
+//chg-e 航跡に出す文字を小さくする by oki098972
+//ins-s ラベルに出す文字を小さくする by oki098972
+    labelStrokeNarrow2 = new ol.style.Stroke({color: 'rgba(0,0,0,1', width: 2.5 * globalScale});
+//ins-e ラベルに出す文字を小さくする by oki098972
+
     bgFill = new ol.style.Stroke({color: 'rgba(0,0,0,0.25'});
 }
 let lastCallLocationChange = 0;
