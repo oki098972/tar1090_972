@@ -790,6 +790,16 @@
               <div class="settingsText">Group by Data Type</div>
             </div>
           </div>
+<!-- ins-s add TraceHour param by oki098972 -->
+          <div>
+            <div class="infoBlockTitleText">航空機軌跡の表示範囲[H]:</div>
+            <!-- <input id="tracehour_input" name="tracehourBox" type="text" style="width: 30px" maxlength="3" title="入力した時間を遡った時刻から現在時刻までの航跡を表示"> -->
+            <input id="tracehour_input" name="tracehourBox" type="text" style="width: 30px" maxlength="3" title="入力した時間を遡った時刻から現在時刻までの航跡を表示">
+            <button type="button" onclick="setTraceHourparam();">Set</button>
+            <button type="button" onclick="getTraceHourparam();">Get</button>
+            <button type="button" onclick="resetTraceHourparam();">Set default</button>
+          </div>
+<!-- ins-e add TraceHour param by oki098972 -->
         </div>
         <div style="display: none" id="credits">
           <span class=credits-image></span>
