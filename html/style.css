@@ -106,7 +106,7 @@ select {
     //width: calc( 32px * var(--SCALE));
     //height: calc( 38px * var(--SCALE));
     //border-radius: calc( 2px * var(--SCALE));
-    //ƒ{ƒ^ƒ“‚ğƒEƒBƒ“ƒhƒE‰E’[‚É”ò‚Î‚µ‚½‚Ì‚ÅƒŠƒTƒCƒY~‚ß‚½;
+    //ãƒœã‚¿ãƒ³ã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å³ç«¯ã«é£›ã°ã—ãŸã®ã§ãƒªã‚µã‚¤ã‚ºæ­¢ã‚ãŸ;
     width: calc( 32px * var(--SCALE));
     height: calc( 38px * var(--SCALE));
     border-radius: calc( 2px * var(--SCALE));
@@ -502,9 +502,9 @@ select.error, textarea.error, input.error {
     text-align: center;
     margin: calc( 5px * var(--SCALE));
     color:#fff;
-    /* ˆÈ‰º‚Í.button‚©‚ç—¬—p */
+    /* ä»¥ä¸‹ã¯.buttonã‹ã‚‰æµç”¨ */
     background-color: var(--ACCENT);
-    /* ã‚Åw’è width: calc( 27px * var(--SCALE)); */
+    /* ä¸Šã§æŒ‡å®š width: calc( 27px * var(--SCALE)); */
     height: calc( 27px * var(--SCALE));
     border-radius: calc( 2px * var(--SCALE));
     margin: calc( 2px * var(--SCALE));
@@ -1045,7 +1045,7 @@ input{
   grid-area: speedHint;
 }
 
-/* ins-s ’Ê•ñŠÈ—ª‰» param by oki098972 */
+/* ins-s é€šå ±ç°¡ç•¥åŒ– param by oki098972 */
 .modalBo {
   width: 100%;
   height: 100%;
@@ -1109,7 +1109,7 @@ input{
     height: 50px;
     bottom: 0;
     right: 0;
-    /* ‚’¼•ûŒü‚Å’†‰›‘µ‚¦i‰º€”õj */
+    /* å‚ç›´æ–¹å‘ã§ä¸­å¤®æƒãˆï¼ˆä¸‹æº–å‚™ï¼‰ */
     position: absolute;
 }
 .buttonModalBo:hover{
@@ -1126,4 +1126,4 @@ input{
     cursor: pointer;
 }
 
-/* ins-e ’Ê•ñŠÈ—ª‰» param by oki098972 */
+/* ins-e é€šå ±ç°¡ç•¥åŒ– param by oki098972 */
