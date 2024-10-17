@@ -860,6 +860,29 @@
         <div id="altitude_chart" class="ol-unselectable ol-control altitudeFeet">
           <button id="altitude_chart_button"></button>
         </div>
+<!-- ins-s reduce hover dialog box size by oki098972 -->
+        <div class="ol-unselectable ol-control" style="float: left; width: 145px; bottom: 0px; left: 140px !important; font-size: 10px; background-color: transparent;">
+          <table cellspacing="0" cellpadding="0">
+            <tr>
+              <td rowspan="2">表示位置</td>
+              <td>
+                <label for="hover_pos_LU">左上</label>
+                <input type="radio" id="hover_pos_LU" name="hover_position" value="h_LU" />
+                <label for="hover_pos_RU">右上</label>
+                <input type="radio" id="hover_pos_RU" name="hover_position" value="h_RU" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="hover_pos_LD">左下</label>
+                <input type="radio" id="hover_pos_LD" name="hover_position" value="h_LD" />
+                <label for="hover_pos_RD">右下</label>
+                <input type="radio" id="hover_pos_RD" name="hover_position" value="h_RD" checked/>
+              </td>
+            </tr>
+          </table>
+        </div>
+<!-- ins-e reduce hover dialog box size by oki098972 -->
         <div id="replayBar">
           <button id="replayPlay" >Play</button>
           <p id="replayDateHint" >Date:</p>
