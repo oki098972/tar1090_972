@@ -266,9 +266,9 @@ let labelZoom = 0;
 let labelZoomGround = 14.8;
 
 let labelFont = 'bold 12px tahoma';
-//ins-s qÕ‚Éo‚·•¶š‚ğ¬‚³‚­‚·‚é by oki098972
+//ins-s èˆªè·¡ã«å‡ºã™æ–‡å­—ã‚’å°ã•ãã™ã‚‹ by oki098972
 let labelFont2 = 'bold 12px tahoma';
-//ins-e qÕ‚Éo‚·•¶š‚ğ¬‚³‚­‚·‚é by oki098972
+//ins-e èˆªè·¡ã«å‡ºã™æ–‡å­—ã‚’å°ã•ãã™ã‚‹ by oki098972
 
 let displayUATasADSB = false;
 let uatNoTISB = false;
