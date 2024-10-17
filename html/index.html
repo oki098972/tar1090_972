@@ -810,6 +810,9 @@
             <span id="U" title="only show the U2 and other military planes" class="button inActiveButton" onclick="toggleMilitary();"><span class="buttonText">U</span></span>
             <span id="H" title="(H)ome / Reset Map" class="button inActiveButton" onclick="resetMap();"><span class="buttonText">H</span></span>
             <span id="T" title="All (T)racks" class="button inActiveButton" onclick="selectAllPlanes();"><span class="buttonText">T</span></span>
+<!-- ins-s add clock by oki098972 -->
+            <span title="current time" id="header_top_time" class="bClockText"></span>
+<!-- ins-e add clock by oki098972 -->
           </div>
         </div>
         <div id="header_side" class="infoHeading">
@@ -946,6 +949,11 @@
 
             <div id="tabs" style="min-height: 10px; overflow: auto">
               <ul>
+<!-- ins-s add Clock by oki098972 -->
+                <li><div style="display: flex; align-items: flex-end; min-width: 180px; height: 28px; margin-left: 5px; margin-right: 5px;">
+                    <p id="add_sp_time" style="margin: 0;"></p>
+                </div></li>
+<!-- ins-e add Clock by oki098972 -->
                 <li><a href="#tab-search">Search</a></li>
                 <li><a href="#tab-filters">Filters</a></li>
                 <li><a href="#tab-columns">Columns</a></li>
@@ -1102,6 +1110,17 @@
     <!-- JS_ANCHOR3 -->
     <script src="planeObject.js"></script>
     <script src="script.js"></script>
+
+<!-- ins-s add Clock by oki098972 -->
+    <script>
+        function show_current_time() {
+            let current_time = new Date();
+            //document.getElementById("add_sp_time").innerHTML = current_time.toLocaleTimeString("ja");
+            document.getElementById("header_top_time").innerHTML = current_time.toLocaleString("ja");
+        }
+        setInterval('show_current_time()',1000);
+    </script>
+<!-- ins-e add Clock by oki098972 -->
 
     <link rel="preload" as="image" crossOrigin="anonymous" href="images/sprites.png">
 
