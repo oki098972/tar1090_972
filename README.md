@@ -1,7 +1,7 @@
 # tar1090
 
 # `UNDER CONSTRUCTION...`
-`ˆÈ‰º‚ÍforkŒ³‚æ‚è–¢•ÏX‚Ìˆ×“®ì•ÛØ‚µ‚È‚¢`
+`ä»¥ä¸‹ã¯forkå…ƒã‚ˆã‚Šæœªå¤‰æ›´ã®ç‚ºå‹•ä½œä¿è¨¼ã—ãªã„`
 
 ![Screenshot1](https://raw.githubusercontent.com/wiedehopf/tar1090/screenshots/screenshot3.png)
 
