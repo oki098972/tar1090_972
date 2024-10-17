@@ -3061,15 +3061,41 @@ function get_aircraftmodelstr(arg_plane) {
             }
         }
     }
-    if (str_tmp == 'N/A' || (!arg_plane.military && arg_plane.military == true && !(regex_str.test(str_tmp))))
+    if (str_tmp == 'N/A' || (arg_plane.military == true && !(regex_str.test(str_tmp))))
     { //型番ヒットせずor軍用機の型番の形式を満たしていない場合はローカルDBを検索する
         str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
     }
 
-    if (str_tmp == 'N/A') {
+    //軍用機フラグのチェック方法変えたのは試しと範囲が広がるかもと思って
+    if (str_tmp == 'N/A' || (loc_checkmil_hex(arg_plane.icao) == true && !(regex_str.test(str_tmp)))) {
         if (arg_plane.icaoType) str_tmp = arg_plane.icaoType;
+//ins-s add 型番未定義Hexを補う param by oki098972
+        if (loc_checkmil_hex(arg_plane.icao) == true) {
+            //loc_db検索でヒットしなければグローバル変数とクッキーにicao hex等々を保存する
+            //グローバルで結果を持つのはポインターで結果を返せないのとI/Fの仕様変更を最小化する為
+            unreg_milmodel_name = arg_plane.icao.toUpperCase() + "=" + arg_plane.registration + "," + arg_plane.icaoType;
+            if (icaodb_cookie_flg == true) {
+                document.cookie = encodeURIComponent(unreg_milmodel_name);
+            }
+        }
+//ins-e add 型番未定義Hexを補う param by oki098972
     }
     
     return str_tmp;
 }
 //ins-e Aircraft Label always ICAO code by oki098972
+//ins-s add 型番未定義Hexを補う param by oki098972
+//PlaneObject.prototype.milRangeが使えるか不明な為（使えてもオーバーヘッド等問題ない？）チェックロジックを抜き出す
+function loc_checkmil_hex(arg_icaohex) {
+    let loc_mum = 0;
+    if (/^[0-9a-f]{6}$/i.test(arg_icaohex)) {
+        loc_mum = parseInt(arg_icaohex,16)
+    }
+    for (let i in milRanges) {
+        const r = milRanges[i];
+        if (loc_mum >= r[0] && loc_mum <= r[1])
+            return true;
+    }
+    return false;
+}
+//ins-e add 型番未定義Hexを補う param by oki098972
