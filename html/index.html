@@ -1155,8 +1155,9 @@
         <div class="buttonModalBoOut">
             <button class="buttonModalBo" id="modal-button2">Table<BR>sel.</button>
             <button class="buttonModalBo" id="modal-button">Post<BR>str.</button>
+            <button class="buttonModalBo" id="modal-button5">List<BR>N/A</button>
             <button class="buttonModalBo" id="modal-button3">DNA/FTM<BR>near?</button>
-            <button class="buttonModalBo" id="modal-button4">deselect<BR>All planes</button>
+            <button class="buttonModalBo" id="modal-button4">deselect<BR>planes</button>
         </div>
 <!-- ins-e add 通報簡略化 param by oki098972 -->
 
@@ -1222,6 +1223,7 @@
     <script>
         document.querySelector('#modal-button').addEventListener('click', Write_tweetstr);
         document.querySelector('#modal-button3').addEventListener('click', ListUpPlaneFromToMilAirport);
+        document.querySelector('#modal-button5').addEventListener('click', ListUp_UnregisteredMilModel);
         document.querySelector('#modal-button2').addEventListener('click', SelectTablesPlane_or_DispPlaneTimeslot);
         document.querySelector('#modal-button4').addEventListener('click', deselectAllPlanes);
     </script>
