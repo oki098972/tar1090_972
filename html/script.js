@@ -9622,9 +9622,12 @@ function convertCSVtoArray(str){ // 読み込んだCSVデータが文字列と�
     return result;
 }
 async function load_locdeftable() {
-    
     //csvファイルの読み込み
     loc_def_tbl_data = await getCSV();
+    //csvファイルが読み込めるなら、データなしicao hexを記録するフラグを立てる
+    if (loc_def_tbl_data.length > 0) {
+        //icaodb_cookie_flg = true;
+    }
 }
 function serch_local_def_table(str) {
     let result = 'N/A';
@@ -9634,6 +9637,30 @@ function serch_local_def_table(str) {
         }
     }
     return result;
+}
+//Web画面の表にある航空機のうち、軍用機で型式名が不明な機体のリストを作る
+//作成したリストはポップアップ及びクリップボードに張り付ける
+function ListUp_UnregisteredMilModel() {
+    let strTemp = "";
+    let ur_milmodel = [];
+    let i = 0;
+    let j = 0;
+    //現在表にある航空機から軍用機かつ型式名が不明な機体のリストを作る
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        const plane = g.planesOrdered[i];
+        unreg_milmodel_name = "";
+        get_aircraftmodelstr(plane);
+        if (unreg_milmodel_name.length > 1) {
+            ur_milmodel.push(unreg_milmodel_name.replace(/=/g, ",")); //イコールがあるとクリップボードにコピーされないので置換する
+        }
+    }
+    for (i = 0; i < ur_milmodel.length; ++i) {
+        strTemp = strTemp + ur_milmodel[i] + "<br>" ;
+    }
+    strTemp = strTemp + "<br>";
+    copyTemplate(strTemp.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
 }
 //ins-e add 型番未定義Hexを補う param by oki098972
 
