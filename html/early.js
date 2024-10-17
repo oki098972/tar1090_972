@@ -56,9 +56,9 @@ let pTracksCurrentTime = false;
 //ins-s add TraceHour param by oki098972
 let TraceHour = false;
 //ins-e add TraceHour param by oki098972
-//ins-s add ’Ê•ñŠÈ—ª‰» param by oki098972
-let TownName = "–¢İ’è";
-//ins-e add ’Ê•ñŠÈ—ª‰» param by oki098972
+//ins-s add é€šå ±ç°¡ç•¥åŒ– param by oki098972
+let TownName = "æœªè¨­å®š";
+//ins-e add é€šå ±ç°¡ç•¥åŒ– param by oki098972
 let pTracksInterval = 15;
 let lastTraceGet = 0;
 let traceRate = 0;
@@ -250,36 +250,36 @@ function resetTraceHourparam() {
 }
 //ins-e add TraceHour param by oki098972
 
-//ins-s add ’Ê•ñŠÈ—ª‰» param by oki098972
+//ins-s add é€šå ±ç°¡ç•¥åŒ– param by oki098972
 function setTownname() {
     if(typeof localStorage === 'undefined') {
-        TownName = "–¢İ’è";
+        TownName = "æœªè¨­å®š";
     } else {
         let tmp = jQuery("#townname_input").val().trim();
         if ( (tmp !== null) && (tmp.length > 0) ) {
             TownName = tmp;
             localStorage.setItem('TownName', TownName);
         } else {
-            TownName = "–¢İ’è";
+            TownName = "æœªè¨­å®š";
         }
     }
     return;
 }
 function getTownname() {
     if(typeof localStorage === 'undefined') {
-        TownName = "–¢İ’è";
+        TownName = "æœªè¨­å®š";
     } else {
 		let tmp = localStorage.getItem('TownName');
         if ( (tmp !== null) && (tmp.length > 0) ) {
             TownName = tmp;
         } else {
-            TownName = "–¢İ’è";
+            TownName = "æœªè¨­å®š";
         }
     }
     jQuery("#townname_input").val(TownName);
     return;
 }
-//ins-e add ’Ê•ñŠÈ—ª‰» param by oki098972
+//ins-e add é€šå ±ç°¡ç•¥åŒ– param by oki098972
 
 function resetSettings() {
     loStore.clear();
@@ -423,22 +423,22 @@ if (usp.has('pTracks')) {
 {
     if(typeof localStorage === 'undefined') {
         TraceHour = 16;
-//ins-s add ’Ê•ñŠÈ—ª‰» param by oki098972
-        TownName = "–¢İ’è";
-//ins-e add ’Ê•ñŠÈ—ª‰» param by oki098972
+//ins-s add é€šå ±ç°¡ç•¥åŒ– param by oki098972
+        TownName = "æœªè¨­å®š";
+//ins-e add é€šå ±ç°¡ç•¥åŒ– param by oki098972
     } else {
         let tmp = localStorage.getItem('TraceHour');
         if ( (tmp !== null) && isFinite(tmp) )
             TraceHour = Number(tmp);
         else
             TraceHour = 16;
-//ins-s add ’Ê•ñŠÈ—ª‰» param by oki098972
+//ins-s add é€šå ±ç°¡ç•¥åŒ– param by oki098972
         let tmp2 = localStorage.getItem('TownName');
         if ( (tmp2 !== null) && (tmp2.length > 0) )
             TownName = tmp2;
         else
-            TownName = "–¢İ’è";
-//ins-e add ’Ê•ñŠÈ—ª‰» param by oki098972
+            TownName = "æœªè¨­å®š";
+//ins-e add é€šå ±ç°¡ç•¥åŒ– param by oki098972
     }
 }
 //ins-e add TraceHour param by oki098972
