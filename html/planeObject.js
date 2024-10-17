@@ -3043,12 +3043,6 @@ function normalizeTraceStamps(data) {
 function get_aircraftmodelstr(arg_plane) {
     const regex_str = /[A-Z]{1,3}\-[0-9]{1,3}[A-Z].*/;
     let str_tmp = 'N/A';
-    //debug code
-    if (arg_plane.icao == "ae5a99") {
-        str_tmp = 'aa'
-        str_tmp = 'N/A';
-    }
-    //debug code
     if (arg_plane.typeLong != null) {
         let array_typestr = arg_plane.typeLong.split(' ');
         for (let i = 0; i < array_typestr.length; i++) {
