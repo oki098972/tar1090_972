@@ -800,6 +800,14 @@
             <button type="button" onclick="resetTraceHourparam();">Set default</button>
           </div>
 <!-- ins-e add TraceHour param by oki098972 -->
+<!-- ins-s add 通報簡略化 param by oki098972 -->
+          <div>
+            <div class="infoBlockTitleText" style="margin-top: 5px; margin-bottom: -1px;">投稿文字列に設定する自治体部落名:</div>
+            <input id="townname_input" name="townnameBox" type="text" style="width: 300px;" maxlength="100" title="投稿に表示する部落名等を入力">
+            <button type="button" onclick="setTownname();">Set</button>
+            <button type="button" onclick="getTownname();">Get</button>
+          </div>
+<!-- ins-e add 通報簡略化 param by oki098972 -->
         </div>
         <div style="display: none" id="credits">
           <span class=credits-image></span>
@@ -1195,6 +1203,25 @@
         setInterval('show_current_time()',1000);
     </script>
 <!-- ins-e add Clock by oki098972 -->
+
+<!-- ins-s add 通報簡略化 param by oki098972 -->
+    <script>
+        document.querySelector('#modal-button').addEventListener('click', Write_tweetstr);
+        document.querySelector('#modal-button3').addEventListener('click', ListUpPlaneFromToMilAirport);
+        document.querySelector('#modal-button2').addEventListener('click', SelectTablesPlane_or_DispPlaneTimeslot);
+        document.querySelector('#modal-button4').addEventListener('click', deselectAllPlanes);
+    </script>
+
+    <dialog id="bs_dialog">
+        <div id="bs_message" style="font-size: 14px;"></div>
+        <form name="popupForm" class="bsPopupForm" style="margin-top:30px; font-size: 12px;">
+        </form>                               
+        <p>上の時間範囲のデータを表示する際には、ラジオボタンを選択して「Chg URL」ボタンを押して下さい。</p>
+        <button id="bs_button-ok" style="width:60px; height:30px; margin-top:30px; margin-right:20px; padding:0; font-size: 14px;">ＯＫ</button>
+        <button id="bs_button-cancel" style="width:60px; height:30px; margin-top:30px; margin-right:20px; padding:0; font-size: 14px;">Cancel</button>
+        <button id="bs_button-changeurl" style="width:100px; height:30px; margin-top:30px; margin-left:40px; padding:0; font-size: 14px;">Chg URL</button>
+    </dialog>
+<!-- ins-e add 通報簡略化 param by oki098972 -->
 
     <link rel="preload" as="image" crossOrigin="anonymous" href="images/sprites.png">
 
