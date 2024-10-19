@@ -191,6 +191,8 @@ let showingReplayBar = false;
 
 //ins-s add 型番未定義Hexを補う param by oki098972
 let loc_def_tbl_data=[];
+let icaodb_cookie_flg = false;
+let unreg_milmodel_name = "";
 //ins-e add 型番未定義Hexを補う param by oki098972
 
 function processAircraft(ac, init, uat) {
