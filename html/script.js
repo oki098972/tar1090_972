@@ -9451,8 +9451,7 @@ async function Write_tweetstr() {
         if (((plane.military && plane.visible) || plane.selected) && (plane.icao != icaohex[0]) ) {
             //visibleは表に在る、inViewはなんだろ？visibleがfalseでもinViewがtureがあるんだよ
             mil_icao.push(plane.icao.toUpperCase());
-            model_name = get_aircraftmodelstr(plane);
-            mil_model.push(model_name);
+            mil_model.push(get_aircraftmodelstr(plane));
         }
     }
     let strTemp = TownName;
