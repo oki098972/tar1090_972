@@ -3065,6 +3065,12 @@ function get_aircraftmodelstr(arg_plane) {
     { //型番ヒットせずor軍用機の型番の形式を満たしていない場合はローカルDBを検索する
         str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
     }
+//ins-s add 型番未定義Hexを補う param by oki098972
+    if ((str_tmp.indexOf('C-130')) == 0 && (str_tmp.length == 5 || str_tmp.length == 6)) {
+        //C-130の一部は型番が中途半端な場合があるのでC-130orC-130?の場合はローカルDBを検索する
+        str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
+    }
+//ins-e add 型番未定義Hexを補う param by oki098972
 
     //軍用機フラグのチェック方法変えたのは試しと範囲が広がるかもと思って
     if (str_tmp == 'N/A' || (loc_checkmil_hex(arg_plane.icao) == true && !(regex_str.test(str_tmp)))) {
