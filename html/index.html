@@ -785,10 +785,6 @@
             <div class="settingsOptionContainer">
               <button class="formButton" onclick="resetSettings();">Reset All Settings</button>
             </div>
-            <div class="settingsOptionContainer">
-              <div class="settingsCheckbox" id="grouptype_checkbox"></div>
-              <div class="settingsText">Group by Data Type</div>
-            </div>
           </div>
 <!-- ins-s add TraceHour param by oki098972 -->
           <div>
@@ -902,11 +898,12 @@
         <div id="replayBar">
           <button id="replayPlay" >Play</button>
           <p id="replayDateHint" >Date:</p>
+          <p id="replayDateHintLocal" ></p>
           <input type="text" class="datepicker" id="replayDatepicker" >
           <p id="replayTimeHint"  >Time:</p>
           <p id="hourSelect"></p>
           <p id="minuteSelect"></p>
-          <p id="replayTimeZone">UTC</p>
+          <p id="replayTimeZone">UTC Date:</p>
           <p id="replaySpeedHint">Speed:</p>
           <p id="replaySpeedSelect"></p>
           <p id="replayLoading"></p>

@@ -50,9 +50,10 @@ let mapResizeTimeout;
 let pointerMoveTimeout;
 let iconSize = 1;
 let debugTracks = false;
+let verboseUpdateTrack = false;
 let debugAll = false;
+let debugRoute = false;
 let trackLabels = false;
-let grouptype_checkbox;
 let multiSelect = false;
 let uat_data = null;
 let enableLabels = false;
@@ -455,8 +456,8 @@ function fetchDone(data) {
                 checkRefresh();
             }
         }
-
-        if (fetchCalls == 1) { console.timeEnd("first fetch()"); };
+        fetchDoneCount++;
+        if (fetchDoneCount == 1) { console.timeEnd("first fetch()"); };
 
         if (!g.firstFetchDone) { afterFirstFetch(); };
 
@@ -533,6 +534,7 @@ function afterFirstFetch() {
 let debugFetch = false;
 let C429 = 0;
 let fetchCalls = 0;
+let fetchDoneCount = 0;
 function fetchData(options) {
     options = options || {};
     if (!timersActive) {
@@ -826,7 +828,7 @@ function initPage() {
     }
 
 
-    if (!globeIndex) {
+    if (!globeIndex && !haveTraces) {
         jQuery("#lastLeg_cb").parent().hide();
         jQuery('#show_trace').hide();
     }
@@ -1274,14 +1276,6 @@ function earlyInitPage() {
         refresh();
     });
 
-    jQuery('#grouptype_checkbox').on('click', function() {
-        if (jQuery('#grouptype_checkbox').hasClass('settingsCheckboxChecked')) {
-            TAR.planeMan.cols.distance.sort();
-        } else {
-            TAR.planeMan.cols.data_source.sort();
-        }
-    });
-
     new Toggle({
         key: "lastLeg",
         display: "Last Leg only",
@@ -1347,8 +1341,8 @@ jQuery('#selected_altitude_geom1')
         setState: function(state) {
             baroUseQNH = state;
             if (baroUseQNH) {
-                jQuery('#selected_altitude1_title').updateText('Corr. baro. alt.');
-                jQuery('#selected_altitude2_title').updateText('Corr. barometric');
+                jQuery('#selected_altitude1_title').updateText('Corr. baro-alt');
+                jQuery('#selected_altitude2_title').updateText('Corr. baro.');
                 jQuery('#infoblock_altimeter').removeClass('hidden');
             } else {
                 jQuery('#selected_altitude1_title').updateText('Baro. altitude');
@@ -3871,9 +3865,9 @@ function refreshFeatures() {
     function compareBeta(xa, ya) {
         if (xa === ya)
             return 0;
-        if (sortAscending && xa < ya)
+        if (planeMan.sortAscending && xa < ya)
             return -1;
-        if (!sortAscending && (xa.replace(/ /g, "").split("").reverse().join("") > ya.replace(/ /g, "").split("").reverse().join("")))
+        if (!planeMan.sortAscending && (xa.replace(/ /g, "").split("").reverse().join("") > ya.replace(/ /g, "").split("").reverse().join("")))
             return -1;
         return 1;
     }
@@ -3893,7 +3887,7 @@ function refreshFeatures() {
         value: function(plane) { return plane.icao; },
         td: '<td class="icaoCodeColumn">',
     };
-    cols.flag = {
+    cols.country = {
         text: 'Flag',
         header: function() { return ""; },
         sort: function () { sortBy('country', compareAlpha, function(x) { return x.country; }); },
@@ -3926,7 +3920,7 @@ function refreshFeatures() {
         //text: 'Registration' };
         text: 'Reg.' };
 //chg-e Change Layout by oki098972
-    cols.aircraft_type = {
+    cols.type = {
         sort: function () { sortBy('type', compareAlpha, function(x) { return x.icaoType; }); },
         value: function(plane) { return (plane.icaoType != null ? plane.icaoType : ""); },
         text: 'Type' };
@@ -3965,7 +3959,7 @@ function refreshFeatures() {
         align: 'right',
         header: function () { return 'V. Rate(' + get_unit_label("verticalRate", DisplayUnits) + ')';},
     };
-    cols.distance = {
+    cols.sitedist = {
         text: pTracks ? 'Max. Distance' : 'Distance',
         sort: function () { sortBy('sitedist',compareNumeric, function(x) { return x.sitedist; }); },
         value: function(plane) { return format_distance_brief(plane.sitedist, DisplayUnits); },
@@ -4334,10 +4328,10 @@ function refreshFeatures() {
     // ---- table sorting begin ----
     //
 
-    let sortId = '';
-    let sortCompare = null;
-    let sortExtract = null;
-    let sortAscending = true;
+    planeMan.sortId = '';
+    planeMan.sortCompare = null;
+    planeMan.sortExtract = null;
+    planeMan.sortAscending = true;
 
     function sortFunction(x,y) {
         const xv = x._sort_value;
@@ -4349,20 +4343,20 @@ function refreshFeatures() {
         if (xv == null) return 1;
         if (yv == null) return -1;
 
-        const c = sortAscending ? sortCompare(xv,yv) : sortCompare(yv,xv);
+        const c = planeMan.sortAscending ? planeMan.sortCompare(xv,yv) : planeMan.sortCompare(yv,xv);
         if (c !== 0) return c;
 
         return x._sort_pos - y._sort_pos;
     }
 
     function resortTable(pList) {
-        if (!sortExtract)
+        if (!planeMan.sortExtract)
             return;
         if (globeIndex) {
             // don't presort for globeIndex
         }
         // presort by dataSource
-        else if (sortId == "sitedist") {
+        else if (planeMan.sortId == "sitedist") {
             for (let i = 0; i < pList.length; ++i) {
                 pList[i]._sort_pos = i;
             }
@@ -4376,7 +4370,7 @@ function refreshFeatures() {
             });
         }
         // or distance
-        else if (sortId == "data_source") {
+        else if (planeMan.sortId == "data_source") {
             pList.sort(function(x,y) {
                 return (x.sitedist - y.sitedist);
             });
@@ -4394,12 +4388,12 @@ function refreshFeatures() {
         if (globeIndex) {
             for (let i = 0; i < pList.length; ++i) {
                 pList[i]._sort_pos = pList[i].numHex;
-                pList[i]._sort_value = sortExtract(pList[i]);
+                pList[i]._sort_value = planeMan.sortExtract(pList[i]);
             }
         } else {
             for (let i = 0; i < pList.length; ++i) {
                 pList[i]._sort_pos = i;
-                pList[i]._sort_value = sortExtract(pList[i]);
+                pList[i]._sort_value = planeMan.sortExtract(pList[i]);
             }
         }
 
@@ -4425,24 +4419,18 @@ function refreshFeatures() {
     }
 
     function sortBy(id, sc, se) {
-        if (id != 'data_source' && grouptype_checkbox) {
-            jQuery('#grouptype_checkbox').removeClass('settingsCheckboxChecked');
-            grouptype_checkbox = false;
-        } else if (id == 'data_source' && !grouptype_checkbox) {
-            jQuery('#grouptype_checkbox').addClass('settingsCheckboxChecked');
-            grouptype_checkbox = true;
-        }
+        loStore['sortCol'] = id;
 
-        if (id === sortId) {
-            sortAscending = !sortAscending;
+        if (id === planeMan.sortId) {
+            planeMan.sortAscending = !planeMan.sortAscending;
             g.planesOrdered.reverse(); // this correctly flips the order of rows that compare equal
-        } else {
-            sortAscending = true;
         }
 
-        sortId = id;
-        sortCompare = sc;
-        sortExtract = se;
+        loStore['sortAscending'] = planeMan.sortAscending ? 'true' : '';
+
+        planeMan.sortId = id;
+        planeMan.sortCompare = sc;
+        planeMan.sortExtract = se;
 
         planeMan.refresh();
     }
@@ -4567,7 +4555,7 @@ function selectPlaneByHex(hex, options) {
 
     const multiDeselect = multiSelect && newPlane && newPlane.selected && !onlySelected;
 
-    if (!options.noFetch && globeIndex && hex) {
+    if (!options.noFetch && (globeIndex || showTrace || haveTraces) && hex) {
         newPlane = getTrace(newPlane, hex, options);
     }
 
@@ -4860,9 +4848,7 @@ function onDisplayUnitsChanged(e) {
     refreshFilter();
 
     // Draw range rings
-    if (siteCircleLayer.getVisible()) {
-        drawSiteCircle();
-    }
+    drawSiteCircle();
 
     // Reset map scale line units
     OLMap.getControls().forEach(function(control) {
@@ -5241,7 +5227,7 @@ function onSearch(e) {
     let results = [];
     if (searchTerm)
         results = findPlanes(searchTerm, "byIcao", "byCallsign", "byReg", "byType", true);
-    if (results.length > 0 && globeIndex) {
+    if (results.length > 0 && haveTraces) {
         toggleIsolation("on");
         if (results.length < 100) {
             getTrace(null, null, {list: results});
@@ -6042,7 +6028,7 @@ function processURLParams(){
 
     if (urlIcaos.length > 0) {
         const icaos = urlIcaos;
-        if (!usp.has('noIsolation'))
+        if (!usp.has('noIsolation') && !usp.has('replay'))
             toggleIsolation("on");
         if (icaos.length > 1) {
             toggleMultiSelect("on");
@@ -6178,6 +6164,8 @@ function findPlanes(queries, byIcao, byCallsign, byReg, byType, showWarnings) {
                 || (byReg && plane.registration != null && plane.registration.toLowerCase().match(query))
                 || (byType && plane.icaoType != null && plane.icaoType.toLowerCase().match(query))
             ) {
+                results.push(plane);
+                /* leaving this code in place just in case, not sure what this limitation to planes on screen is for when searching
                 if (globeIndex) {
                     if (plane.inView)
                         results.push(plane);
@@ -6185,6 +6173,7 @@ function findPlanes(queries, byIcao, byCallsign, byReg, byType, showWarnings) {
                     if (plane.checkVisible())
                         results.push(plane);
                 }
+                */
             }
         }
     }
@@ -6203,7 +6192,7 @@ function findPlanes(queries, byIcao, byCallsign, byReg, byType, showWarnings) {
     } else {
         console.log("No match found for query: " + queries);
         let foundByHex = 0;
-        if (globeIndex) {
+        if (haveTraces) {
             for (let i in queries) {
                 const query = queries[i];
                 if (query.toLowerCase().match(/~?[a-f,0-9]{6}/)) {
@@ -6391,13 +6380,16 @@ function updateAddressBar() {
 
     let string = '';
 
-    if (SelPlanes.length > 0) {
-        string += '?icao=' + SelPlanes.map((s) => encodeURIComponent(s.icao)).join(',')
-    } else if (replay) {
+    if (replay) {
         string += '?replay=';
         string += zDateString(replay.ts);
         string += '-' + replay.ts.getUTCHours().toString().padStart(2,'0');
         string += ':' + replay.ts.getUTCMinutes().toString().padStart(2,'0');
+    }
+
+    if (SelPlanes.length > 0) {
+        string += (string ? '&' : '?');
+        string += 'icao=' + SelPlanes.map((s) => encodeURIComponent(s.icao)).join(',')
     }
 
     if (showTrace || replay) {
@@ -6405,7 +6397,7 @@ function updateAddressBar() {
         string += 'lat=' + CenterLat.toFixed(3) + '&lon=' + CenterLon.toFixed(3) + '&zoom=' + zoomLvl.toFixed(1);
     }
 
-    if (SelPlanes.length > 0 && (showTrace || replay)) {
+    if (SelPlanes.length > 0 && (showTrace)) {
         string += (string ? '&' : '?');
         string += 'showTrace=' + traceDateString;
         if (legSel != -1)
@@ -6629,6 +6621,9 @@ function toggleShowTrace() {
             plane.setNull();
         }
         selectPlaneByHex(hex, {noDeselect: true, follow: true, zoom: zoomLvl,});
+        if (replay) {
+            replayStep();
+        }
     }
 
     jQuery('#history_collapse').toggle();
@@ -6915,7 +6910,6 @@ function geoFindMe() {
         if (loStore['geoFindMeFirstVisit'] != 'no' && !(usp.has("lat") && usp.has("lon"))) {
             OLMap.getView().setCenter(ol.proj.fromLonLat([SiteLon, SiteLat]));
             loStore['geoFindMeFirstVisit'] = 'no';
-            siteCircleLayer.setVisible(true);
         }
 
         initSitePos();
@@ -6983,22 +6977,28 @@ function initSitePos() {
         drawSiteCircle();
         createLocationDot();
     } else {
-        TAR.planeMan.setColumnVis('distance', false);
+        TAR.planeMan.setColumnVis('sitedist', false);
     }
 
-    if (initSitePosFirstRun && SitePosition) {
+    if (initSitePosFirstRun) {
         initSitePosFirstRun = false;
         const sortBy = usp.get('sortBy');
         if (sortBy) {
+            TAR.planeMan.ascending = true;
             TAR.planeMan.cols[sortBy].sort();
             if (usp.has('sortByReverse')) {
                 TAR.planeMan.cols[sortBy].sort();
             }
-        } else if (SitePosition) {
-            TAR.planeMan.cols.distance.sort();
+        } else if (loStore['sortCol']) {
+            TAR.planeMan.sortAscending = Boolean(loStore['sortAscending']);
+            TAR.planeMan.cols[loStore['sortCol']].sort();
         } else {
-            TAR.planeMan.cols.altitude.sort();
-            TAR.planeMan.cols.altitude.sort();
+            if (SitePosition) {
+                TAR.planeMan.cols.sitedist.sort();
+            } else {
+                planeMan.sortAscending = false;
+                TAR.planeMan.cols.altitude.sort();
+            }
         }
     }
 }
@@ -7279,10 +7279,11 @@ function getTrace(newPlane, hex, options) {
 
     // use non historic traces until 60 min after midnight
     let today = new Date();
-    if ((showTrace || replay) && !(today.getTime() > traceDate.getTime() && today.getTime() < traceDate.getTime() + (24 * 3600 + 60 * 60) * 1000)) {
-        let dateString = traceDateString || zDateString(today);
+    let refDate = (replay ? replay.ts : traceDate) || today;
+
+    if ((showTrace || replay) && !(today.getTime() > refDate.getTime() && today.getTime() < refDate.getTime() + (24 * 3600 + 60 * 60) * 1000)) {
         URL1 = null;
-        URL2 = 'globe_history/' + dateString.replace(/-/g, '/') + '/traces/' + hex.slice(-2) + '/trace_full_' + hex + '.json';
+        URL2 = 'globe_history/' + zDateString(refDate).replace(/-/g, '/') + '/traces/' + hex.slice(-2) + '/trace_full_' + hex + '.json';
         traceRate += 3;
     } else {
         URL1 = 'data/traces/'+ hex.slice(-2) + '/trace_recent_' + hex + '.json';
@@ -7290,8 +7291,7 @@ function getTrace(newPlane, hex, options) {
         traceRate += 2;
     }
     if (showTrace && trace_hist_only) {
-        let dateString = traceDateString || zDateString(today);
-        URL2 = 'globe_history/' + dateString.replace(/-/g, '/') + '/traces/' + hex.slice(-2) + '/trace_full_' + hex + '.json';
+        URL2 = 'globe_history/' + zDateString(refDate).replace(/-/g, '/') + '/traces/' + hex.slice(-2) + '/trace_full_' + hex + '.json';
     }
 
     traceOpts.follow = (options.follow == true);
@@ -7733,8 +7733,6 @@ function loadReplay(ts) {
     replay.ts = ts;
     replaySetTimeHint();
 
-    setTraceDate({ts: ts});
-
     if (!g.replayCache) {
         g.replayCache = new ItemCache(onMobile ? 12 : 24);
     }
@@ -7792,7 +7790,6 @@ function loadReplay(ts) {
                         .then((data) => {
                             delete replay.abortController;
                             g.replayCache.add(rKey, data);
-                            setTraceDate({ts: ts});
                             initReplay(chunk, data);
                             //console.log(`loaded: ${rKey}`);
                             ff();
@@ -7855,6 +7852,17 @@ function initReplay(chunk, data) {
     replayStep();
 }
 
+function setReplayTimeHint(date) {
+    if (true || utcTimesHistoric) {
+        jQuery("#replayDateHintLocal").html(TIMEZONE + " Date: " + lDateString(date));
+        jQuery("#replayDateHint").html("" + zDateString(date));
+        jQuery("#replayTimeHint").html("UTC:" + NBSP + zuluTime(date) + ' / ' + TIMEZONE + ":" + NBSP + localTime(date));
+    } else {
+        jQuery("#replayDateHintLocal").html("");
+        jQuery("#replayDateHint").html("Date: " + lDateString(date));
+        jQuery("#replayTimeHint").html("Time: " + localTime(date) + NBSP + TIMEZONE);
+    }
+}
 function replayOnSliderMove() {
     clearTimeout(refreshId);
 
@@ -7863,13 +7871,8 @@ function replayOnSliderMove() {
     date.setUTCMinutes(Number(replay.minutes));
     replay.seconds = 0;
     date.setUTCSeconds(Number(replay.seconds));
-    if (true || utcTimesHistoric) {
-        jQuery("#replayDateHint").html("Date: " + zDateString(date));
-        jQuery("#replayTimeHint").html("Time: " + zuluTime(date) + NBSP + 'Z');
-    } else {
-        jQuery("#replayDateHint").html("Date: " + lDateString(date));
-        jQuery("#replayTimeHint").html("Time: " + localTime(date) + NBSP + TIMEZONE);
-    }
+
+    setReplayTimeHint(date);
 }
 let replayJumpEnabled = true;
 function replayJump() {
@@ -7904,8 +7907,8 @@ function replaySetTimeHint(arg) {
     dateString = zDateString(replay.ts);
     timeString = zuluTime(replay.ts) + NBSP + 'Z';
 
-    jQuery("#replayDateHint").html("Date: " + dateString);
-    jQuery("#replayTimeHint").html("Time: " + timeString);
+    setReplayTimeHint(replay.ts);
+
     if (replay.datepickerDate != dateString) {
         replay.datepickerDate = dateString;
         jQuery("#replayDatepicker").datepicker('setDate', dateString);
@@ -8438,7 +8441,7 @@ function noLongerHidden() {
     if (heatmap)
         return;
 
-    if (!globeIndex)
+    if (!haveTraces)
         return;
 
     let count = 0;

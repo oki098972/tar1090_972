@@ -32,6 +32,7 @@ let zstdDefer = jQuery.Deferred();
 let configureReceiver = jQuery.Deferred();
 let historyQueued = jQuery.Deferred();
 let historyTimeout = 60;
+let haveTraces = false;
 let globeIndex = 0;
 let globeIndexGrid = 0;
 let globeIndexSpecialTiles;
@@ -454,7 +455,13 @@ function zuluTime(date) {
         + ":" + date.getUTCMinutes().toString().padStart(2,'0')
         + ":" + date.getUTCSeconds().toString().padStart(2,'0');
 }
-const TIMEZONE = new Date().toLocaleTimeString(undefined,{timeZoneName:'short'}).split(' ')[2];
+let TIMEZONE;
+if (navigator.language == 'en-US') {
+    TIMEZONE = new Date().toLocaleTimeString('en-US', {timeZoneName:'short'}).split(' ')[2];
+} else {
+    TIMEZONE = new Date().toLocaleTimeString('en-GB', {timeZoneName:'short'}).split(' ')[1];
+}
+TIMEZONE = TIMEZONE.replace("GMT", "UTC");
 function localTime(date) {
     return date.getHours().toString().padStart(2,'0')
         + ":" + date.getMinutes().toString().padStart(2,'0')
@@ -564,15 +571,15 @@ if (uuid) {
 
 let heatmapLoadingState = {};
 function loadHeatChunk() {
-    if (heatmapLoadingState.index > heatChunks.length) {
+    if (heatmapLoadingState.index >= heatChunks.length) {
         heatmapDefer.resolve();
         return; // done, stop recursing
     }
 
-
     let time = new Date(heatmapLoadingState.start + heatmapLoadingState.index * heatmapLoadingState.interval);
     let sDate = sDateString(time);
     let index = 2 * time.getUTCHours() + Math.floor(time.getUTCMinutes() / 30);
+
 
     let base = "globe_history/";
 
@@ -584,33 +591,46 @@ function loadHeatChunk() {
         num: heatmapLoadingState.index,
         xhr: arraybufferRequest,
     });
+    heatmapLoadingState.index++;
+
+    const sliceEnd = new Date(time.getTime() + (30 * 60 - 1) * 1000);
+    console.log(zDateString(time) + ' ' + zuluTime(time) + ' - ' + zuluTime(sliceEnd) + ' ' + URL);
+
     {req.done(function (responseData) {
+        heatmapLoadingState.completed++;
+        jQuery("#loader_progress").attr('value', heatmapLoadingState.completed);
         heatChunks[this.num] = responseData;
         loadHeatChunk();
     });}
     {req.fail(function(jqxhr, status, error) {
         loadHeatChunk();
     });}
-    heatmapLoadingState.index++;
 }
 
 if (!heatmap) {
     heatmapDefer.resolve();
 } else {
+    // round heatmap end to half hour
+    heatmap.end = Math.floor(heatmap.end / (1800 * 1000)) * (1800 * 1000);
     let end = heatmap.end;
     let start = end - heatmap.duration * 3600 * 1000; // timestamp in ms
     let interval = 1800 * 1000;
     let numChunks = Math.round((end - start) / interval);
-    console.log('numChunks: ' + numChunks + ' heatDuration: ' + heatmap.duration + ' heatEnd: ' + new Date(heatmap.end));
+    console.log('numChunks: ' + numChunks + ' heatDuration: ' + heatmap.duration + ' heatEnd: ' + new Date(heatmap.end) + ' / ' + new Date(heatmap.end).toUTCString());
     heatChunks = Array(numChunks).fill(null);
     heatPoints = Array(numChunks).fill(null);
     // load chunks sequentially via recursion:
     heatmapLoadingState.index = 0;
     heatmapLoadingState.interval = interval;
     heatmapLoadingState.start = start;
+
+    heatmapLoadingState.completed = 0;
+    jQuery("#loader_progress").attr('value', heatmapLoadingState.completed);
+    jQuery("#loader_progress").attr('max', numChunks);
+
     // 2 async chains of heat chunk loading:
     loadHeatChunk();
-    loadHeatChunk();
+    setTimeout(loadHeatChunk, 500);
 }
 
 if (uuid != null) {
@@ -646,6 +666,8 @@ if (uuid != null) {
             data.globeIndexGrid = null; // disable globe on user request
         }
         dbServer = (data.dbServer) ? true : false;
+
+        haveTraces = Boolean(data.haveTraces || data.globeIndexGrid);
 
         if (heatmap || replay) {
             if (replay && data.globeIndexGrid != null)

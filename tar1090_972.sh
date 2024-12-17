@@ -2,8 +2,8 @@
 
 set -e
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
-#trap 'echo tar1090.sh: exiting; trap - SIGTERM; kill -- -$( ps opgid= $$ | tr -d " " ) || true; exit 0' SIGTERM SIGINT SIGHUP SIGQUIT
-trap 'echo tar1090_972.sh: exiting; trap - SIGTERM; kill -- -$( ps opgid= $$ | tr -d " " ) || true; exit 0' SIGTERM SIGINT SIGHUP SIGQUIT
+#trap 'echo tar1090.sh: exiting; trap - SIGTERM; pkill -P $$ || true; exit 0' SIGTERM SIGINT SIGHUP SIGQUIT
+trap 'echo tar1090_972.sh: exiting; trap - SIGTERM; pkill -P $$ || true; exit 0' SIGTERM SIGINT SIGHUP SIGQUIT
 
 # run with lowest priority
 renice 20 $$ || true
@@ -164,6 +164,9 @@ while true; do
     next_error=0
     error_printed=0
     while ! [[ -f "$SRC_DIR/aircraft.json" ]] || ! prune "$SRC_DIR/aircraft.json" "history_$date.json"; do
+        if ! [[ -f chunks.json ]]; then
+            break
+        fi
         now=$(date +%s%N | head -c-7)
         if (( now > next_error )); then
             if (( next_error != 0 )); then

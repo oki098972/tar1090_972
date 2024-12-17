@@ -567,7 +567,9 @@ PlaneObject.prototype.updateTrack = function(now, last, serverTrack, stale) {
         // The new state is only drawn after the state has changed
         // and we then get a new position.
 
-        this.logSel("sec_elapsed: " + since_update.toFixed(1) + " alt_change: "+ alt_change.toFixed(0) + " derived_speed(kt/Mach): " + (distance_traveled/since_update*1.94384).toFixed(0) + " / " + (distance_traveled/since_update/343).toFixed(1) + " dist:" + distance_traveled.toFixed(0));
+        if (verboseUpdateTrack) {
+            this.logSel("sec_elapsed: " + since_update.toFixed(1) + " alt_change: "+ alt_change.toFixed(0) + " derived_speed(kt/Mach): " + (distance_traveled/since_update*1.94384).toFixed(0) + " / " + (distance_traveled/since_update/343).toFixed(1) + " dist:" + distance_traveled.toFixed(0));
+        }
 
         let segments = [[projPrev]];
 
@@ -1039,6 +1041,10 @@ PlaneObject.prototype.processTrace = function() {
     }
     if (replay && !this.fullTrace)
         return;
+
+    if (!showTrace && !this.fullTrace && !this.recentTrace) {
+        return;
+    }
 
     if (!now)
         now = new Date().getTime()/1000;
@@ -1873,7 +1879,7 @@ function altitudeLines (segment) {
                 new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: color,
-                        width: 2 * newWidth * multiplier,
+                        width: 1 * newWidth * multiplier,
                         lineJoin: join,
                         lineCap: cap,
                     })
@@ -1895,7 +1901,7 @@ function altitudeLines (segment) {
                 new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: color,
-                        width: 2 * newWidth * multiplier,
+                        width: 1 * newWidth * multiplier,
                         lineJoin: join,
                         lineCap: cap,
                     })
@@ -2009,7 +2015,8 @@ PlaneObject.prototype.updateLines = function() {
             const historic = (showTrace || replay);
             const useLocal = ((historic && !utcTimesHistoric) || (!historic && !utcTimesLive));
             const date = new Date(seg.ts * 1000);
-            const refDate = (showTrace || replay) ? traceDate : new Date();
+            let refDate = showTrace ? traceDate : new Date();
+            if (replay) { refDate = replay.ts };
             if (getDay(refDate) == getDay(date)) {
                 timestamp1 = "";
             } else {
@@ -2935,7 +2942,7 @@ function routeDoLookup(currentTime) {
     // JavaScript doesn't interrupt running functions - so this should be safe to do
     if (g.route_check_in_flight == false && g.route_check_array.length > 0) {
         g.route_check_in_flight = true;
-        if (debugAll) {
+        if (debugRoute) {
             console.log(`${currentTime}: g.route_check_array:`, g.route_check_array);
         }
         // grab up to the first 100 callsigns and leave the rest for later
@@ -2950,12 +2957,12 @@ function routeDoLookup(currentTime) {
             .done((routes) => {
                 let currentTime = new Date().getTime()/1000;
                 g.route_check_in_flight = false;
-                if (debugAll) {
+                if (debugRoute) {
                     console.log(`${currentTime}: got routes:`, routes);
                 }
                 for (var route of routes) {
                     // let's log just a little bit of what's happening
-                    if (debugAll) {
+                    if (debugRoute) {
                         var logText = `result for ${route.callsign}: `;
                         if (route._airport_codes_iata == 'unknown') {
                             logText += 'unknown to the API server';
@@ -2980,7 +2987,7 @@ function routeDoLookup(currentTime) {
                 console.log('API server call failed with', status);
             });
     } else {
-        if (0 && debugAll) {
+        if (0 && debugRoute) {
             console.log(`nothing to send to server at ${currentTime}`);
         }
     }
