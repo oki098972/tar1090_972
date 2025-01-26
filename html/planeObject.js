@@ -3073,8 +3073,14 @@ function get_aircraftmodelstr(arg_plane) {
         str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
     }
 //ins-s add 型番未定義Hexを補う param by oki098972
-    if ((str_tmp.indexOf('C-130')) == 0 && (str_tmp.length == 5 || str_tmp.length == 6)) {
-        //C-130の一部は型番が中途半端な場合があるのでC-130orC-130?の場合はローカルDBを検索する
+    if ((str_tmp.indexOf('C-130') == 0) && (str_tmp.length == 5 || str_tmp.length == 6))
+    { //C-130の一部は型番が中途半端な場合があるのでC-130orC-130?の場合はローカルDBを検索する
+        str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
+    }
+    //if ((str_tmp.indexOf('H-60') == 0) || ((str_tmp.indexOf('UH-60') == 0) && (str_tmp.length == 6)))
+    if (str_tmp.indexOf('H60') == 0)
+    { //H-60の一部は型番が中途半端な場合があるのでH-60orUH-60の場合はローカルDBを検索する
+      //今の所xH-60は軍用型式チェックで弾かれH60でここには来るのでそれのみ対応する
         str_tmp = serch_local_def_table(arg_plane.icao.toUpperCase());
     }
 //ins-e add 型番未定義Hexを補う param by oki098972
