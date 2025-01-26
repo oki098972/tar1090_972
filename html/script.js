@@ -195,6 +195,9 @@ let loc_def_tbl_data=[];
 let icaodb_cookie_flg = false;
 let unreg_milmodel_name = "";
 //ins-e add 型番未定義Hexを補う param by oki098972
+//ins-s 騒音検知時間 param by oki098972
+let php_result_fname = "";
+//ins-e 騒音検知時間 param by oki098972
 
 function processAircraft(ac, init, uat) {
     const isArray = Array.isArray(ac);
@@ -9667,6 +9670,162 @@ function ListUp_UnregisteredMilModel() {
     show_and_close_ModalWindow(strTemp);
 }
 //ins-e add 型番未定義Hexを補う param by oki098972
+//ins-s 騒音検知時間 param by oki098972
+//csvファイルを読み込み配列を返す関数
+//getCSV関数は上にもあるが、非同期だし汎用性ない（特定のファイル決め打ちでとるので）しで
+//本来はこっちに置き換えるべき、ただ面倒なので今の所両者併存させとく
+//元ネタ：以下のURLのgetCsv関数
+//https://qiita.com/rubyfmzk_/items/1902453ca13e4d8662ee
+function getCsvAndConvArray(url){
+  //CSVファイルを文字列で取得。
+  var txt = new XMLHttpRequest();
+  txt.open('get', url, false);
+  txt.send();
+
+  //改行ごとに配列化
+  var arr = txt.responseText.split('\n');
+
+  //1次元配列を2次元配列に変換
+  var res = [];
+  for(var i = 0; i < arr.length; i++){
+    //空白行が出てきた時点で終了
+    if(arr[i] == '') break;
+    
+    //","ごとに配列化
+    res[i] = arr[i].split(',');
+
+    //csvの中身がそのままほしいので以下の処理は外す
+    //for(var i2 = 0; i2 < res[i].length; i2++){
+    //  //数字の場合は「"」を削除
+    //  if(res[i][i2].match(/\-?\d+(.\d+)?(e[\+\-]d+)?/)){
+    //    res[i][i2] = parseFloat(res[i][i2].replace('"', ''));
+    //  }
+    //}
+    //csv配列の要素にスペースがある場合、XMLHttpRequestで読み込むと勝手に
+    //ダブルクォーテーションで囲まれるので、それを外す
+    for(var i2 = 0; i2 < res[i].length; i2++){
+      //「"」を削除
+      res[i][i2] = res[i][i2].replaceAll('"', '');
+    }
+
+
+  }
+
+  return res;
+}
+
+//confirmAsyncを改造してnoize_confirmAsync
+const noize_confirmAsync = async message => {
+    let i = 0;
+
+    document.getElementById("noize_message").innerHTML = message;
+    document.getElementById("noize_dialog").showModal();
+
+    //時間範囲（午前か午後か）の選択肢を表示する処理
+    let c_t = new Date();
+    let tgt_halfday = Array(8);
+    //午後午前選択対応「xx/xx AMorPM」でラジオボタンの選択肢文字列の作成
+    //※せっかく作ったのでコードは残すが必要性薄いのでここ以外はロジック組んでいないので
+    //※午後午前選択対応に拡張する際にはほかの箇所（多分csvから配列に取り込んだ部分の後）で作りこみ必要
+    //for (i = 0; i < tgt_halfday.length; i++) {
+    //    tgt_halfday[i] = (c_t.getFullYear() + "/" + (c_t.getMonth() + 1).toString().padStart(2, '0') + "/" + c_t.getDate().toString().padStart(2, '0') + " " + ((i % 2 == 0) ? "PM" : "AM"));
+    //    if (i % 2 == 1) c_t.setDate(c_t.getDate() - 1);
+    //}
+    //日付の選択肢の表示文字列の作成、tgt_halfdayの変数名と合わなくなったが戻す可能性もない訳では無い（でもたぶんない...）ので変えない
+    for (i = 0; i < tgt_halfday.length; i++) {
+        tgt_halfday[i] = (c_t.getFullYear() + "/" + (c_t.getMonth() + 1).toString().padStart(2, '0') + "/" + c_t.getDate().toString().padStart(2, '0'));
+        c_t.setDate(c_t.getDate() - 1);
+    }
+    let formElement = document.getElementsByName("noizepopupForm").item(0); //この名前は一個しかない予定
+    //let radioelm = Array(tgt_halfday.length/2);
+    for(i = 0; i < (tgt_halfday.length); i++) {
+        const radioelm = document.createElement("input");
+        radioelm.type = "radio";
+        radioelm.name = "halfday";
+        radioelm.id = "id_halfday_" + String(i);
+        radioelm.value = i;
+        const txtA = document.createTextNode(tgt_halfday[i])
+        const labA = document.createElement("label");
+        labA.htmlFor = radioelm.id;
+        labA.appendChild(radioelm);
+        labA.appendChild(txtA);
+        formElement.appendChild(labA);
+    }
+
+    return new Promise(resolve => {
+        let nexturl = "";
+        let param_ptracks = 0;
+        let param_ptracksend = 0;
+        const eventBase = flag => () => {
+            document.getElementById("noize_dialog").close();
+            document.getElementById("noize_button-ok").removeEventListener("click", okEvent);
+            document.getElementById("noize_button-cancel").removeEventListener("click", cancelEvent);
+            if (flag == "ok") {
+                //chgurlEventを受けて処理を書くのが一般的な気もするがまあいいか他の処理考えるのめんどくさいし
+                //url入力欄にurl突っ込んでリロードする処理
+                //javascriptとphpとの連携は下記URLを参考にした
+                //https://zenn.dev/chromel/articles/5a28fb3bcd6715
+                //下記URLを参考にして同期型処理に変更した
+                //https://qiita.com/rubyfmzk_/items/1902453ca13e4d8662ee
+                const  halfday_val = document.forms.noizepopupForm.halfday.value;
+                php_result_fname = "";
+                let xhr = new XMLHttpRequest();
+                
+                //openの第三引数は同期(false)に変更
+                xhr.open("GET","./noizetime.php?Halfday=" + tgt_halfday[halfday_val].replaceAll(" ", "") + "&Noizelevel=" + Noizelevel.toString(),false); 
+                xhr.send(null);
+                php_result_fname = xhr.responseText; //同期型だとこれにする必要がある
+            }
+            //ラジオボタン関連の要素は上の処理までは必要なので、ここで消す（消さないと次回表示時に表示される為消去必須）
+            $("*[name=noizepopupForm]").children().remove();
+            resolve(flag);
+        };
+        const okEvent = eventBase("ok");
+        const cancelEvent = eventBase("cancel");
+    
+        document.getElementById("noize_button-ok").addEventListener("click", okEvent);
+        document.getElementById("noize_button-cancel").addEventListener("click", cancelEvent);
+    });
+};
+
+async function FighterSoundTime() {
+    let strTemp = "";
+    let i = 0;
+    let j = 0;
+    let str_arg = "指定した日に指定した以上の音量を検出した時間を表示します。";
+    let csvdata = [];
+    if (await noize_confirmAsync(str_arg)  == "ok") {
+        csvdata = getCsvAndConvArray(php_result_fname);
+        for ( i = 0; i < csvdata.length; i = i + 2 ) {
+            const s1 = csvdata[i][0].substr(11,5);
+            const s2 = csvdata[i+1][0].substr(11,5);
+            if ( s1 == s2 ) {
+                strTemp = strTemp + s1 + "<br>";
+            } else {
+                strTemp = strTemp + s1 + "～" + s2 + "<br>";
+            }
+        }
+        //投稿用文字列を追加
+        let csv_d = csvdata[0][0].match(/^([0-9]{4})\/([0-9]{2})\/([0-9]{2})/u);
+        strTemp = TownName + " " + String(csv_d[2]) + "/" +  String(csv_d[3]) + "<br>戦闘機の可能性大の大きい音がした時間<br>" 
+                      + String(Noizelevel) + "以上で抽出<br><br>" + strTemp + "<br>#OHアラート";
+    } else {
+        strTemp = "キャンセルしました";
+    }
+    //クリップボードに調査用データをコピー
+    let strClipBoard = strTemp;
+    copyTemplate(strClipBoard.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
+    let lines = strTemp.split("<br>").length;  //http://itmst.blog71.fc2.com/blog-entry-112.htmlによると高速らしい、最速ではないが理解が容易なので採用
+    if (lines <= 14) {
+        //14行以下の場合はフォントサイズを大きくする
+        let className1 = document.getElementsByClassName("innerBo");
+        className1[0].style.fontSize = "17px"; //class名だとリストでしか取れないらしい確か、なので一個しかなくてもこの指定
+    }
+
+}
+//ins-e 騒音検知時間 param by oki098972
 
 //ins-s add 型番未定義Hexを補う param by oki098972
 load_locdeftable();
