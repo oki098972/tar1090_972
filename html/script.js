@@ -9637,7 +9637,7 @@ function serch_local_def_table(str) {
     let result = 'N/A';
     for(let i = 0; i < loc_def_tbl_data.length ; i++) {
         if (loc_def_tbl_data[i][0] == str) {
-            return loc_def_tbl_data[i][2]
+            return loc_def_tbl_data[i][2] + "."
         }
     }
     return result;
