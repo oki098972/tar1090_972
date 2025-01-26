@@ -873,7 +873,7 @@
           <button id="altitude_chart_button"></button>
         </div>
 <!-- ins-s reduce hover dialog box size by oki098972 -->
-        <div class="ol-unselectable ol-control" style="float: left; width: 145px; bottom: 0px; left: 140px !important; font-size: 10px; background-color: transparent;">
+        <div class="ol-unselectable ol-control" style="float: left; width: 300px; bottom: 0px; left: 140px !important; font-size: 10px; background-color: transparent;">
           <table cellspacing="0" cellpadding="0">
             <tr>
               <td rowspan="2">表示位置</td>
@@ -882,6 +882,9 @@
                 <input type="radio" id="hover_pos_LU" name="hover_position" value="h_LU" />
                 <label for="hover_pos_RU">右上</label>
                 <input type="radio" id="hover_pos_RU" name="hover_position" value="h_RU" />
+              </td>
+              <td rowspan="2">
+                <button class="buttonModalBo" id="modal-button_a" style="width: auto; height: auto; padding: 8px; margin-left:10px">BigNoizeDetectTime</button>
               </td>
             </tr>
             <tr>
@@ -1218,6 +1221,7 @@
 
 <!-- ins-s add 通報簡略化 param by oki098972 -->
     <script>
+        document.querySelector('#modal-button_a').addEventListener('click', FighterSoundTime);
         document.querySelector('#modal-button').addEventListener('click', Write_tweetstr);
         document.querySelector('#modal-button3').addEventListener('click', ListUpPlaneFromToMilAirport);
         document.querySelector('#modal-button5').addEventListener('click', ListUp_UnregisteredMilModel);
@@ -1235,6 +1239,22 @@
         <button id="bs_button-changeurl" style="width:100px; height:30px; margin-top:30px; margin-left:40px; padding:0; font-size: 14px;">Chg URL</button>
     </dialog>
 <!-- ins-e add 通報簡略化 param by oki098972 -->
+<!-- ins-s 騒音検知時間 by oki098972 -->
+    <dialog id="noize_dialog">
+        <div id="noize_message" style="font-size: 14px;"></div>
+        <form name="noizepopupForm" class="c_noizePopupForm" style="margin-top:10px; font-size: 12px;">
+        </form>
+        <div style="margin-top: 10px;">
+            <button type="button" style="margin-right: 10px;" onclick="setNoizelevelparam();">Set</button>
+            <button type="button" onclick="getNoizelevelparam();">Get</button>
+            <input id="noizelevel_input" name="noizelevelBox" type="text" style="width: 60px" maxlength="7" title="記入された値以上の騒音の出た時間を表示する">
+            <span>以上の騒音が出た時間を表示</span>
+        </div>
+        <p  style="margin-top: 10px;">上の時間範囲のデータを表示する際には、<br>ラジオボタンを選択して「OK」ボタンを押して下さい。</p>
+        <button id="noize_button-ok" style="width:60px; height:30px; margin-top:0px; margin-right:20px; padding:0; font-size: 14px;">ＯＫ</button>
+        <button id="noize_button-cancel" style="width:60px; height:30px; margin-top:0px; margin-right:20px; padding:0; font-size: 14px;">Cancel</button>
+    </dialog>
+<!-- ins-e 騒音検知時間 by oki098972 -->
 
     <link rel="preload" as="image" crossOrigin="anonymous" href="images/sprites.png">
 
