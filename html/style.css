@@ -1086,7 +1086,7 @@ input{
   align-items: start;
   flex-direction: column;
   color: #333;
-  font-size: 140%;
+  font-size: 100%;
   overflow: scroll;
 }
 .buttonModalBo{
