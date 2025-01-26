@@ -9600,7 +9600,7 @@ async function SelectTablesPlane_or_DispPlaneTimeslot() {
 //CSVファイルを読み込む関数getCSV()の定義
 function getCSV() {
     return new Promise((resolve, reject) => {
-        let req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成、サーバと非同期通信するためのAPI
+        let req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRequestオブジェクトを生成、サーバと非同期通信するためのAPI
         req.open("get", "loc_mil_db.csv", true); // アクセスするファイルを指定
         req.onload = () => {
             if (req.readyState === 4 && req.status === 200) {
