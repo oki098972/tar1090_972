@@ -60,6 +60,9 @@ let TraceHour = false;
 //ins-s add 通報簡略化 param by oki098972
 let TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s 騒音検知時間 by oki098972
+let Noizelevel = false;
+//ins-e 騒音検知時間 by oki098972
 let pTracksInterval = 15;
 let lastTraceGet = 0;
 let traceRate = 0;
@@ -282,6 +285,38 @@ function getTownname() {
 }
 //ins-e add 通報簡略化 param by oki098972
 
+//ins-s 騒音検知時間 by oki098972
+function setNoizelevelparam() {
+    if(typeof localStorage === 'undefined') {
+        Noizelevel = 2000;
+    } else {
+        let tmp = jQuery("#noizelevel_input").val().trim();
+        if ( (tmp !== null) && isFinite(tmp) ) {
+            Noizelevel = Number(tmp);
+            localStorage.setItem('Noizelevel', Noizelevel);
+        } else {
+            Noizelevel = 2000;
+        }
+    }
+    return;
+}
+
+function getNoizelevelparam() {
+    if(typeof localStorage === 'undefined') {
+        Noizelevel = 2000;
+    } else {
+		let tmp = localStorage.getItem('Noizelevel');
+        if ( (tmp !== null) && isFinite(tmp) ) {
+            Noizelevel = Number(tmp);
+        } else {
+            Noizelevel = 2000;
+        }
+    }
+    jQuery("#noizelevel_input").val(Noizelevel);
+    return;
+}
+//ins-e 騒音検知時間 by oki098972
+
 function resetSettings() {
     loStore.clear();
     if (window.history && window.history.replaceState) {
@@ -427,6 +462,9 @@ if (usp.has('pTracks')) {
 //ins-s add 通報簡略化 param by oki098972
         TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s 騒音検知時間 by oki098972
+        Noizelevel = 2000;
+//ins-e 騒音検知時間 by oki098972
     } else {
         let tmp = localStorage.getItem('TraceHour');
         if ( (tmp !== null) && isFinite(tmp) )
@@ -440,6 +478,13 @@ if (usp.has('pTracks')) {
         else
             TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s 騒音検知時間 by oki098972
+        let tmp3 = localStorage.getItem('Noizelevel');
+        if ( (tmp3 !== null) && isFinite(tmp3) )
+            Noizelevel = Number(tmp3);
+        else
+            Noizelevel = 2000;
+//ins-e 騒音検知時間 by oki098972
     }
 }
 //ins-e add TraceHour param by oki098972
