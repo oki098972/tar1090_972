@@ -1132,3 +1132,15 @@ input{
 }
 
 /* ins-e 通報簡略化 param by oki098972 */
+
+/* ins-s 騒音検知時間 by oki098972 */
+.c_noizePopupForm>label{
+    display: block;
+    margin-left: 80px;
+}
+.c_noizePopupForm>label>input{
+    margin-right: 5px;
+    cursor: pointer;
+}
+/* ins-e 騒音検知時間 by oki098972 */
+
