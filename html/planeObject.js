@@ -835,35 +835,29 @@ PlaneObject.prototype.updateIcon = function() {
     let labelText = null;
 
 //chg-s force display aircraft labels by oki098972
-    //if ( enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
-    if ( fdispLabels || enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
+    //if ( g.enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
+    if ( fdispLabels || g.enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
 //chg-e force display aircraft labels by oki098972
         (
-            (zoomLvl >= labelZoom && this.altitude != "ground" && this.dataSource != "ais")
-            || (zoomLvl >= labelZoomGround - 2 && this.speed > 5 && !this.fakeHex)
-            || (zoomLvl >= labelZoomGround + 0 && !this.fakeHex)
-            || (zoomLvl >= labelZoomGround + 1)
+            (g.zoomLvl >= labelZoom && this.altitude != "ground" && this.dataSource != "ais")
+            || (g.zoomLvl >= labelZoomGround - 2 && this.speed > 5 && !this.fakeHex)
+            || (g.zoomLvl >= labelZoomGround + 0 && !this.fakeHex)
+            || (g.zoomLvl >= labelZoomGround + 1)
             || this.selected
         )
     ) {
         let callsign = "";
 //chg-s Aircraft Label always ICAO code by oki098972
-        //if (this.flight && this.flight.trim())
+        //if (this.flight && this.flight.trim() && !(this.dataSource == "ais" && !g.extendedLabels))
         //    callsign =  this.flight.trim();
         //else if (this.registration)
         //    callsign =  'reg: ' + this.registration;
         //else
         //    callsign =   'hex: ' + this.icao;
+        //if ((useRouteAPI || this.dataSource == "ais") && this.routeString)
+        //    callsign += ' - ' + this.routeString;
         callsign = this.icao.toUpperCase();
 //chg-e Aircraft Label always ICAO code by oki098972
-//ins-s Aircraft Label always ICAO code by oki098972
-        let tmp_typestr = 'N/A';
-        //tmp_typestr = get_aircraftmodelstr(this.icao, this.typeLong, this.icaoType, this.military);
-        tmp_typestr = get_aircraftmodelstr(this);
-        callsign += '\n' + tmp_typestr;
-//ins-e Aircraft Label always ICAO code by oki098972
-        if (useRouteAPI && this.routeString)
-            callsign += ' - ' + this.routeString;
 
         const unknown = NBSP+NBSP+"?"+NBSP+NBSP;
 
@@ -890,7 +884,7 @@ PlaneObject.prototype.updateIcon = function() {
                     labelText += '\nHIJACK';
                 }
             }
-        } else if (extendedLabels == 3) {
+        } else if (g.extendedLabels == 3) {
             if (!windLabelsSlim) {
                 labelText += 'Wind' + NBSP;
             }
@@ -917,15 +911,15 @@ PlaneObject.prototype.updateIcon = function() {
             if (windLabelsSlim && this.wd == null) {
                 labelText = '';
             }
-        } else if (extendedLabels == 2) {
+        } else if (g.extendedLabels == 2) {
             labelText += (this.registration ? this.registration : unknown) + NBSP + (this.icaoType ? this.icaoType : unknown) + '\n';
         }
-        if (extendedLabels == 1 || extendedLabels == 2) {
+        if (g.extendedLabels == 1 || g.extendedLabels == 2) {
             if ((!this.onGround || (this.speed && this.speed > 18) || (this.selected && !SelectedAllPlanes))) {
                 labelText += speedString + NBSP + NNBSP + altString.padStart(6, NBSP) + '\n';
             }
         }
-        if (extendedLabels < 3 && !uk_advisory) {
+        if (g.extendedLabels < 3 && !uk_advisory) {
             labelText += callsign;
         }
     }
@@ -1554,12 +1548,7 @@ PlaneObject.prototype.updateData = function(now, last, data, init) {
     }
 
     if (data.rssi != null && data.rssi > -49.4) {
-        if (!globeIndex && this.rssi != null && RefreshInterval < 1500) {
-            let factor = Math.min(1, Math.log(2 - RefreshInterval / 1500));
-            this.rssi = this.rssi * (1 - factor) + data.rssi * factor;
-        } else {
-            this.rssi = data.rssi;
-        }
+        this.rssi = data.rssi;
     } else {
         this.rssi = null;
     }
@@ -1667,6 +1656,10 @@ PlaneObject.prototype.updateData = function(now, last, data, init) {
         this.checkForDB(data);
     }
 
+    if (data.route) {
+        this.routeString = data.route;
+    }
+
     this.last = now;
     this.updatePositionData(now, last, data, init);
     return;
@@ -1756,11 +1749,11 @@ PlaneObject.prototype.updateMarker = function(moved) {
     this.scale = iconSize * this.baseScale;
     this.strokeWidth = outlineWidth * ((this.selected && !SelectedAllPlanes && !onlySelected) ? 0.85 : 0.7) / this.baseScale;
 
-    if (!this.marker && (!webgl || enableLabels)) {
+    if (!this.marker && (!webgl || g.enableLabels)) {
         this.marker = new ol.Feature(this.olPoint);
         this.marker.hex = `${this.icao}`;
     }
-    if (webgl && !enableLabels && this.marker) {
+    if (webgl && !g.enableLabels && this.marker) {
         if (this.marker.visible) {
             PlaneIconFeatures.removeFeature(this.marker);
             this.marker.visible = false;
@@ -1775,13 +1768,13 @@ PlaneObject.prototype.updateMarker = function(moved) {
 
         this.setMarkerRgb();
         const iconRotation = this.shape.noRotate ? 0 : this.rotation;
-        this.glMarker.set('rotation', iconRotation * Math.PI / 180.0 + mapOrientation);
+        this.glMarker.set('rotation', iconRotation * Math.PI / 180.0 + g.mapOrientation);
         this.glMarker.set('scale', this.scale * Math.max(this.shape.w, this.shape.h) / glIconSize);
         this.glMarker.set('sx', getSpriteX(this.shape) * glIconSize);
         this.glMarker.set('sy', getSpriteY(this.shape) * glIconSize);
     }
 
-    if (this.marker && (!webgl || enableLabels)) {
+    if (this.marker && (!webgl || g.enableLabels)) {
         this.updateIcon();
         if (!this.marker.visible) {
             this.marker.visible = true;
@@ -1987,7 +1980,7 @@ PlaneObject.prototype.updateLines = function() {
             seg.label = true;
         } else if (
             trackLabels ||
-            ((i == 0 || i == this.track_linesegs.length-1 ||seg.leg) && showTrace && enableLabels)
+            ((i == 0 || i == this.track_linesegs.length-1 ||seg.leg) && showTrace && g.enableLabels)
         ) {
             // 0 vertical rate to avoid arrow
             let altString;
@@ -2763,7 +2756,7 @@ PlaneObject.prototype.isNonIcao = function() {
 };
 
 PlaneObject.prototype.checkVisible = function() {
-    const refresh = lastRefreshInt / 1000;
+    const refresh = g.lastRefreshInt / 1000;
     const noInfoTimeout = replay ? 600 : (reApi ? (30 + 2 * refresh) : (30 + Math.min(1, (globeTilesViewCount / globeSimLoad)) * (2 * refresh)));
     const modeSTime = (guessModeS && this.dataSource == "modeS") ? 300 : 0;
     const tisbReduction = (globeIndex && this.icao[0] == '~') ? 15 : 0;
@@ -2772,6 +2765,10 @@ PlaneObject.prototype.checkVisible = function() {
 
     // recompute seen and seen_pos
     let __now = now;
+    if (isNaN(__now)) {
+        console.error("checkVisible: now is NaN, this is probably a browser bug: https://issues.chromium.org/issues/401652934");
+        __now = g.now;
+    }
     if (this.dataSource == "uat") {
         __now = uat_now;
     }
