@@ -854,10 +854,16 @@ PlaneObject.prototype.updateIcon = function() {
         //    callsign =  'reg: ' + this.registration;
         //else
         //    callsign =   'hex: ' + this.icao;
-        //if ((useRouteAPI || this.dataSource == "ais") && this.routeString)
-        //    callsign += ' - ' + this.routeString;
         callsign = this.icao.toUpperCase();
 //chg-e Aircraft Label always ICAO code by oki098972
+//ins-s Aircraft Label always ICAO code by oki098972
+        let tmp_typestr = 'N/A';
+        //tmp_typestr = get_aircraftmodelstr(this.icao, this.typeLong, this.icaoType, this.military);
+        tmp_typestr = get_aircraftmodelstr(this);
+        callsign += '\n' + tmp_typestr;
+//ins-e Aircraft Label always ICAO code by oki098972
+        if ((useRouteAPI || this.dataSource == "ais") && this.routeString)
+            callsign += ' - ' + this.routeString;
 
         const unknown = NBSP+NBSP+"?"+NBSP+NBSP;
 
