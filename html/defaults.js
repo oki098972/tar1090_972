@@ -261,7 +261,10 @@ let labelZoom = 0;
 let labelZoomGround = 14.8;
 
 // font family for labels, default bold, could be empty or italic as well
-let labelStyle = 'bold';
+//chg-s 航跡に出す文字を小さくする by oki098972
+//let labelStyle = 'bold';
+let labelStyle = 'normal';
+//chg-e 航跡に出す文字を小さくする by oki098972
 let labelFamily = 'Tahoma, Verdana, Helvetica, sans-serif';
 let labelScale = 1;
 
