@@ -7,7 +7,7 @@
 ADFE80,92-3287,C-130H,FR24
 ADFEBF,96-00109,UC-35A-1,Radarbox
 AE0134,97-00103,UC-35A-1,Radarbox
-AE180C,?,?,not find.
+AE180C,167795?,UH-1Y?,https://x.com/kitapk/status/1909804711710278001
 AE01C8,64-14846,RC-135V,Radarbox
 AE0207,86-0081,C-12J,Reg.
 AE036C,98-00006,UC-35A,Radarbox
@@ -15,6 +15,8 @@ AE03CB,163311,KC-130T,Radarbox
 AE03D0,164180,KC-130T,Radarbox
 AE03DC,165352,KC-130T,Radarbox
 AE03E1,164994,C-130T,Radarbox
+AE03E6,165158,C-130T,Radarbox
+AE03ED,165349,C-130T,Radarbox
 AE03FE,84-00152,C-12U-3,Radarbox
 AE0400,84-0155,C-12U-3,Radarbox
 AE04F3,84-00164,C-12U-3,Radarbox
@@ -33,13 +35,17 @@ AE1205,89-00274,RC-12X,Radarbox
 AE1438,166713,UC-35D,Reg.
 AE1478,166766,UC-35D,Reg.
 AE20FD,166946,EA-18G,Reg.
+AE2BD9,167854,MH-60S,Radarbox
 AE49E4,168380,EA-18G,https://www.live-military-mode-s.eu/updates/Updates%202018-11-07.txt
 AE4A79,168206,UC-12W,Reg.
 AE4A7D,168209,UC-12W,Radarbox
+AE4B32,161262,CH-53E,https://flyteam.jp/photo/3957777
+AE4B37,161383,CH-53E,https://www.live-military-mode-s.eu/PublicArea/indexmilads5.php
 AE4B41,161532,CH-53E,Reg.
 AE4B44,164539,CH-53E,https://www.ads-b.nl/index.php?pageno=3001&checkcountry=United%20States&checktype=H53
 AE4B45,161540,CH-53E,Reg.
 AE4B4E,161993,CH-53E,https://www.live-military-mode-s.eu/phpBB3/viewtopic.php?t=1680
+AE4B4F,161994,CH-53E,https://ads-b-storage.nl/index.php?pageno=1099&type=H53
 AE4B68,162489,CH-53E,https://www.live-military-mode-s.eu/phpBB3/viewtopic.php?t=1680
 AE4B77,162525,CH-53E,Radarbox
 AE4B7E,163072,CH-53E,Radarbox
@@ -52,6 +58,7 @@ AE4D2A,168532,MH-60S,RadarBox
 AE4E50,168218,MV-22B,Reg.
 AE4E52,168220,MV-22B,Reg.
 AE4E53,168243,MV-22B,Reg.
+AE4E6A,?,MV-22B?,not find.
 AE4E6C,?,MV-22B?,not find.
 AE4E6D,?,MV-22B?,not find.
 AE4F4C,166597,MH-60R,Radarbox
@@ -60,7 +67,9 @@ AE54CF,12-5762,MC-130,Radarbox
 AE57A9,14-20697,HH-60M,Radarbox
 AE5856,?,MV-22B?,not find.
 AE5858,?,MV-22B?,not find.
+AE5901,?,MV-22B?,not find.
 AE5925,?,MV-22B?,not find.
+AE5927,?,MV-22B?,not find.
 AE5936,?,MV-22B?,not find.
 AE5A99,168601,MV-22B,Reg.
 AE5A9E,168606,MV-22B,Reg.
@@ -69,6 +78,8 @@ AE6042,169532,KC-130J,Radarbox
 AE60C7,168655,MV-22B,Reg.
 AE60CB,168659,MV-22B,Reg.
 AE60CC,168660,MV-22B,Reg.
+AE60CC,168660,MV-22B,Reg.
+AE60CF,168663,MV-22B,Reg.
 AE60D1,168665,MV-22B,Reg.
 AE625B,169307,MQ-4C,https://x.com/Oceanworldfree/status/1839061960253431966
 AE63C2,21-46086,KC-46A,https://www.planespotters.net/hex/AE63C2
@@ -78,7 +89,9 @@ AE6470,169539,UC-12W,Reg.
 AE6B9F,169446,CMV-22B,Reg.
 AE6BA9,169456,CMV-22B,Radarbox
 AE6C17,170275,KC-130J,Reg.
+AE6C1C,170280,KC-130J,https://airband-japan.jimdofree.com/adsb-%E7%B1%B3%E8%BB%8D%E6%A9%9F/
 AE6C20,170284,KC-130J,Radarbox
 AE6C21,170285,KC-130J,https://planefinder.net/data/aircraft/170285
+AE6CF2,20-1949,C-37B,https://www.flightdb.net/aircraft.php?modes=AE6CF2
 AE6D82,20-5961,MC-130J,航空機無線Handbook
 AEEBA5,169452,CMV-22B,https://x.com/Oceanworldfree/status/1730378790482690426
