@@ -9565,7 +9565,10 @@ async function Write_tweetstr() {
         if (((plane.military && plane.visible) || plane.selected) && (plane.icao != icaohex[0]) ) {
             //visibleは表に在る、inViewはなんだろ？visibleがfalseでもinViewがtureがあるんだよ
             mil_icao.push(plane.icao.toUpperCase());
-            mil_model.push(get_aircraftmodelstr(plane));
+            let strTemp = get_aircraftmodelstr(plane);
+            if (strTemp == "P8 ?") { strTemp = "P8"; }
+            if (strTemp.slice(-1) == ".") { strTemp = strTemp.slice(0, -1); }
+            mil_model.push(strTemp);
         }
     }
     let strTemp = TownName;
@@ -9766,8 +9769,16 @@ function ListUp_UnregisteredMilModel() {
         unreg_milmodel_name = "";
         get_aircraftmodelstr(plane);
         if (unreg_milmodel_name.length > 1) {
-            ur_milmodel.push(unreg_milmodel_name.replace(/=/g, ",")); //イコールがあるとクリップボードにコピーされないので置換する
+            ur_milmodel.push(unreg_milmodel_name.replace(/=/g, ",").split(",")); //イコールがあるとクリップボードにコピーされないので置換する＆文字列を配列に変換
         }
+    }
+    if ( ur_milmodel.length > 0 ) {
+        //ur_milmodel配列をindex[0]基準で昇順にソートする
+        ur_milmodel.sort((a,b) => {
+            if (a[0] > b[0]) return 1;
+            else if (a[0] < b[0]) return -1;
+            else 0;
+        });
     }
     for (i = 0; i < ur_milmodel.length; ++i) {
         strTemp = strTemp + ur_milmodel[i] + "<br>" ;
