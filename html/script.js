@@ -6991,7 +6991,9 @@ function initSitePos() {
     if (initSitePosFirstRun) {
         initSitePosFirstRun = false;
         const sortBy = usp.get('sortBy');
-        if (sortBy) {
+        if (sortBy == "nosort" ) {
+            // no sorting
+        } else if (sortBy) {
             TAR.planeMan.ascending = true;
             TAR.planeMan.cols[sortBy].sort();
             if (usp.has('sortByReverse')) {
