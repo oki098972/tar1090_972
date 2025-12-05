@@ -6763,7 +6763,11 @@ function shiftTrace(offset) {
 
     jQuery('#leg_sel').text('Loading ...');
     if (!traceDate || offset == "today") {
-        setTraceDate({ ts: new Date().getTime() });
+        if (replay) {
+            setTraceDate({ ts: replay.ts.getTime() });
+        } else {
+            setTraceDate({ ts: new Date().getTime() });
+        }
     } else if (offset) {
         setTraceDate({ ts: traceDate.getTime() + offset * 86400 * 1000 });
     }
@@ -7285,7 +7289,7 @@ function getTrace(newPlane, hex, options) {
 
     // use non historic traces until 60 min after midnight
     let today = new Date();
-    let refDate = (replay ? replay.ts : traceDate) || today;
+    let refDate = ((replay && !showTrace) ? replay.ts : traceDate) || today;
 
     if ((showTrace || replay) && !(today.getTime() > refDate.getTime() && today.getTime() < refDate.getTime() + (24 * 3600 + 60 * 60) * 1000)) {
         URL1 = null;
