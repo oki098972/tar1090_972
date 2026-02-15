@@ -1024,7 +1024,17 @@ PlaneObject.prototype.updateIcon = function() {
         this.markerIcon.setOpacity(opacity);
     }
     */
-    const iconRotation = this.shape.noRotate ? 0 : this.rotation;
+//chg-s add okiDistKM by oki098972
+    //const iconRotation = this.shape.noRotate ? 0 : this.rotation;
+    let iconRotation = this.shape.noRotate ? 0 : this.rotation;
+//chg-e add okiDistKM by oki098972
+//ins-s add okiDistKM by oki098972
+    if ( pTracks && (okiDistKM > 0) ) {
+        if ( this.okiLastTL && this.okiLastTL > 0 ) {
+            iconRotation = this.track_linesegs[this.okiLastTL].track;
+        }
+    }
+//ins-e add okiDistKM by oki098972
     if (this.rotationCache != iconRotation && Math.abs(this.rotationCache - iconRotation) > 0.35) {
         this.rotationCache = iconRotation;
         this.markerIcon.setRotation(iconRotation * Math.PI / 180.0);
@@ -1307,6 +1317,9 @@ PlaneObject.prototype.processTrace = function() {
                 track: this.rotation,
                 rId: this.rId,
                 dataSource: this.dataSource,
+//ins-s add okiDistKM by oki098972
+                okiDistKM: -1,
+//ins-e add okiDistKM by oki098972
             });
         }
         now = new Date().getTime()/1000;
@@ -1964,6 +1977,19 @@ PlaneObject.prototype.updateLines = function() {
             continue;
         }
 //ins-e add TraceHour param by oki098972
+//ins-s add okiDistKM by oki098972
+        //okiDistMが設定されてたら、その範囲外のデータは弾く
+        if (okiDistM > 0) {
+            let data_pos;
+            if (seg.position) {
+                let temp_dist = ol.sphere.getDistance(SitePosition, seg.position);
+                seg.okiDistKM = (temp_dist / 1000).toFixed(2);
+                if ( okiDistM <= temp_dist ) {
+                    continue;
+                }
+            }
+        }
+//ins-e add okiDistKM by oki098972
         if (seg.feature && (!trackLabels || seg.label))
             break;
 
@@ -2108,6 +2134,9 @@ PlaneObject.prototype.updateLines = function() {
         }
     }
 
+//ins-s add okiDistKM by oki098972
+  if ( okiDistKM == 0 ) {
+//ins-e add okiDistKM by oki098972
     let lastseg = this.track_linesegs[this.track_linesegs.length - 1];
     let lastfixed = lastseg.fixed.getCoordinateAt(1.0);
     let geom = new ol.geom.LineString([lastfixed, ol.proj.fromLonLat(this.position)]);
@@ -2123,7 +2152,9 @@ PlaneObject.prototype.updateLines = function() {
         this.elastic_feature.hex = this.icao;
         trail_add.push(this.elastic_feature);
     }
-
+//ins-s add okiDistKM by oki098972
+  }
+//ins-e add okiDistKM by oki098972
 
     if (trail_add.length > 0)
         this.trail_features.addFeatures(trail_add);
@@ -2888,6 +2919,21 @@ PlaneObject.prototype.setProjection = function(arg) {
     let lon = pos[0];
     let lat = pos[1];
     let moved = false;
+//ins-s add okiDistKM by oki098972
+    if ( pTracks && (okiDistKM > 0) ) {
+        //for (let i = 0; i < this.track_linesegs.length; i++)
+        for (let i = this.track_linesegs.length-1; i >= 0; i--)
+        {
+            let seg = this.track_linesegs[i];
+            if ( seg.feature && (seg.feature == true) ) {
+                lon = seg.position[0];
+                lat = seg.position[1];
+                this.okiLastTL = i;
+                break;
+            }
+        }
+    }
+//ins-e add okiDistKM by oki098972
 
     //let trace = new Error().stack.toString();
     //console.log(lat + ' ' + trace);

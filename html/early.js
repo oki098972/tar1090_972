@@ -63,6 +63,10 @@ let TownName = "未設定";
 //ins-s 騒音検知時間 by oki098972
 let Noizelevel = false;
 //ins-e 騒音検知時間 by oki098972
+//ins-s add okiDistKM by oki098972
+let okiDistKM = 0;
+let okiDistM = 0;
+//ins-e add okiDistKM by oki098972
 let pTracksInterval = 15;
 let lastTraceGet = 0;
 let traceRate = 0;
@@ -492,6 +496,18 @@ if (usp.has('pTracks')) {
     }
 }
 //ins-e add TraceHour param by oki098972
+//ins-s add okiDistKM by oki098972
+if (usp.has('okiDistKM')) {
+    let tmp = parseFloat(usp.get('okiDistKM'))
+    if (tmp > 0 && tmp < 500) {
+        okiDistKM = tmp;
+        okiDistM = tmp * 1000;
+    } else {
+        okiDistKM = 0;
+        okiDistM = 0;
+    }
+}
+//ins-e add okiDistKM by oki098972
 
 function getDay(date) {
     if ((utcTimesLive && !showTrace) || (utcTimesHistoric && showTrace))
