@@ -475,7 +475,10 @@ select.error, textarea.error, input.error {
     top:  150px;
 /* chg-e move map select button by oki098972 */
     width: calc( 38px * var(--SCALE));
-    z-index: 9;
+/* chg-s move map select button by oki098972 */
+    /* z-index: 9; */
+    z-index: 20;
+/* chg-e move map select button by oki098972 */
 }
 #header_top {
     text-align: right;
