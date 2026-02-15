@@ -1002,18 +1002,28 @@ PlaneObject.prototype.updateIcon = function() {
                     offsetY: labels_top ? (this.shape.w *-0.3*0.74*this.scale) : (this.shape.w *0.5*0.74*this.scale),
                     padding: [1, 0, -1, 2],
                 }),
-                zIndex: this.zIndex,
+//chg-s アイコンが重なる場合、軍用機を上にする by oki098972
+                //zIndex: this.zIndex,
+                zIndex: this.military ? (this.zIndex + 200000) : (this.zIndex),
+//chg-e アイコンが重なる場合、軍用機を上にする by oki098972
             };
         } else {
             style = {
                 image: this.markerIcon,
-                zIndex: this.zIndex,
+//chg-s for アイコンが重なる場合、軍用機を上にする by oki098972
+                //zIndex: this.zIndex,
+                zIndex: this.military ? (this.zIndex + 200000) : (this.zIndex),
+//chg-e for アイコンが重なる場合、軍用機を上にする by oki098972
             };
         }
         if (webgl)
             delete style.image;
         this.markerStyle = new ol.style.Style(style);
         this.marker.setStyle(this.markerStyle);
+//ins-s アイコンが重なる場合、軍用機を上にする by oki098972
+        //zIndexデバッグ用
+        //console.log("icao: " + this.icao + "    zIndex: " + this.markerStyle.getZIndex() + "    alt: " + this.altitude);
+//ins-e アイコンが重なる場合、軍用機を上にする by oki098972
     }
     if (webgl)
         return;
@@ -2124,9 +2134,17 @@ PlaneObject.prototype.updateLines = function() {
                         radius: 2 * globalScale,
                         fill: blackFill,
                     }),
-                    zIndex: Number(zIndex),
+//chg-s for アイコンが重なる場合、軍用機を上にする by oki098972
+                    //zIndex: Number(zIndex),
+                    //以下の変更をしても航跡のtextは上に来ない、意図通りに動作させる為には更なる調査が必要
+                    zIndex: this.military ? (Number(zIndex) + 250000) : (Number(zIndex)),
+//chg-e for アイコンが重なる場合、軍用機を上にする by oki098972
                 })
             );
+//ins-s アイコンが重なる場合、軍用機を上にする by oki098972
+            //zIndexデバッグ用
+            //console.log("icao: " + this.icao + "    this-zIndex: " + this.zIndex +  "    zIndex: " + seg.label.getStyle().getZIndex() + "    zIndexOrg: " + zIndex + "    alt: " + this.altitude);
+//ins-e アイコンが重なる場合、軍用機を上にする by oki098972
             seg.label.hex = `${this.icao}`;
             seg.label.timestamp = Number(seg.ts);
             seg.label.isLabel = true;
