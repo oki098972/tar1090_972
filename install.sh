@@ -364,7 +364,9 @@ do
 
     sed -i -e 's/id="webinterface_version">/\0'"(${TAR_VERSION})/" index.html
 
-    "$gpath/git/cachebust.sh" "$gpath/git/cachebust.list" "$TMP"
+#   なぜかcachebust.shに実行権限が付かないので無しでも動くように変える
+#    "$gpath/git/cachebust.sh" "$gpath/git/cachebust.list" "$TMP"
+    bash "$gpath/git/cachebust.sh" "$gpath/git/cachebust.list" "$TMP"
 
     rm -rf "$html_path"
     mv "$TMP" "$html_path"
