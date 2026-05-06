@@ -20,7 +20,8 @@ AE03E3,164996,C-130T,航空機無線Handbook
 AE03E6,165158,C-130T,Radarbox
 AE03ED,165349,C-130T,Radarbox
 AE03FE,84-00152,C-12U-3,Radarbox
-AE0400,84-0155,C-12U-3,Radarbox
+AE0400,84-00155,C-12U-3,flightdb.net/aircraft.php?modes=AE0401
+AE0401,84-00156,C-12U-3,Radarbox
 AE0402,84-00157,C-12U-3,Reg.
 AE04F3,84-00164,C-12U-3,Radarbox
 AE04F4,84-00165,C-12U-3,https://www.flightdb.net/aircraft.php?modes=AE04F4
@@ -40,6 +41,7 @@ AE1438,166713,UC-35D,Reg.
 AE1478,166766,UC-35D,Reg.
 AE20FD,166946,EA-18G,Reg.
 AE2BD9,167854,MH-60S,Radarbox
+AE2BE2,167863,MH-60S,航空機無線Handbook
 AE49E4,168380,EA-18G,https://www.live-military-mode-s.eu/updates/Updates%202018-11-07.txt
 AE4A79,168206,UC-12W,Reg.
 AE4A7D,168209,UC-12W,Radarbox
@@ -61,6 +63,7 @@ AE4B9B,164777,CH-53E,https://www.live-military-mode-s.eu/phpBB3/viewtopic.php?t=
 AE4BAB,165244,CH-53E,Radarbox
 AE4D2A,168532,MH-60S,RadarBox
 AE4D38,168546,MH-60S,航空機無線Handbook
+AE4D60,168586,MH-60R,航空機無線Handbook
 AE4E50,168218,MV-22B,Reg.
 AE4E52,168220,MV-22B,Reg.
 AE4E53,168243,MV-22B,Reg.
@@ -97,7 +100,9 @@ AE6470,169539,UC-12W,Reg.
 AE6B9F,169446,CMV-22B,Reg.
 AE6BA9,169456,CMV-22B,Radarbox
 AE6C17,170275,KC-130J,Reg.
+AE6C1A,170278,KC-130J,航空機無線Handbook
 AE6C1C,170280,KC-130J,https://airband-japan.jimdofree.com/adsb-%E7%B1%B3%E8%BB%8D%E6%A9%9F/
+AE6C1D,170281,KC-130J,航空機無線Handbook
 AE6C20,170284,KC-130J,Radarbox
 AE6C21,170285,KC-130J,https://planefinder.net/data/aircraft/170285
 AE6CF2,20-1949,C-37B,https://www.flightdb.net/aircraft.php?modes=AE6CF2

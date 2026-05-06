@@ -9501,6 +9501,19 @@ function ft_reg_check(seg_point) {
     return ret_val;
 }
 
+//渡された位置が、嘉手納の北東空域の範囲内、設定高度以下の場合
+//音を聞いた可能性があるのでtrueを返す
+function kd_ne_reg_check(seg_point) {
+    let ret_val = false;
+    if (seg_point.altitude <= 1500) { //1500ft = 457.2m
+        if ((seg_point.position[0] >= 127.7874) && (seg_point.position[0] <= 128.0116)) {
+            if ((seg_point.position[1] >= 26.2409) && (seg_point.position[1] <= 26.4868)) {
+                ret_val = true;
+            }
+        }
+    }
+    return ret_val;
+}
 
 //モーダルウィンドウ（ポップアップ）に引数の文字列を表示する
 //表示されたポップアップはポップアップの外（でもブラウザ上？）をクリックしたら消える
@@ -9556,6 +9569,54 @@ function ListUpPlaneFromToMilAirport() {
                 break;
             }
             if (ft_reg_check(plane.track_linesegs[j])) {
+                target_flg = true;
+                break;
+            }
+        }
+        if (target_flg == true) {
+            mil_icao.push(plane.icao);
+        }
+    }
+    if (mil_icao.length > 0) {
+        strTemp = strTemp + "<br>";
+        if ( !multiSelect ) {
+            toggleMultiSelect( "on" );
+        }
+        for (i = 0; i < mil_icao.length; ++i) {
+            strTemp = strTemp + "<br>" + mil_icao[i];
+            let plane_temp = g.planes[mil_icao[i]];
+            if ("selected" in plane_temp) {
+                if (plane_temp.selected != true) {
+                    selectPlaneByHex(mil_icao[i], {follow: false});
+                }
+            } else {
+                selectPlaneByHex(mil_icao[i], {follow: false});
+            }
+        }
+    }
+    strTemp = strTemp + "<br>";
+    copyTemplate(strTemp.replace(/<br>/g, "\n"));
+    //モーダルウィンドウ（ポップアップ）に表示
+    show_and_close_ModalWindow(strTemp);
+}
+
+//嘉手納北東付近を通過した航空機のリストを作り、対象の航空機を選択状態にする
+//作成したリストはポップアップ及びクリップボードに張り付ける
+function ListUpPlaneAtDNA_NE() {
+    let strTemp = "";
+    let mil_icao = [];
+    let i = 0;
+    let j = 0;
+    //嘉手納/普天間発着機のリストを作る
+    for (i = 0; i < g.planesOrdered.length; ++i) {
+        let target_flg = false;
+        const plane = g.planesOrdered[i];
+        //音を聞いた可能性のある航空機を見つけるのが目的なので軍用以外も対象とする
+        //if (plane.military == true || plane.visible == false || ( (("typeDescription" in plane) && plane.typeDescription !== null ) && plane.typeDescription.charAt(0) == 'H')) {
+        //    continue; //ヘリと軍用機と表にない人は対象外
+        //}
+        for (j = plane.track_linesegs.length-1; j >= 0; j--) {
+            if (kd_ne_reg_check(plane.track_linesegs[j])) {
                 target_flg = true;
                 break;
             }
