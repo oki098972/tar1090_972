@@ -442,7 +442,7 @@ function fetchDone(data) {
             checkMovement();
             if (firstFetch) {
                 firstFetch = false;
-                if (uuid) {
+                if (uuid || filterUuid) {
                     const ext = myExtent(OLMap.getView().calculateExtent(OLMap.getSize()));
                     let jump = true;
                     for (let i = 0; i < g.planesOrdered.length; ++i) {
@@ -609,7 +609,30 @@ function fetchData(options) {
         for (let i in uuid) {
             ac_url.push('uuid/?feed=' + uuid[i]);
         }
-    } else if (reApi || filterUuid) {
+    } else if (filterUuid) {
+        for (let i in filterUuid) {
+            let url = 're-api/?' + (binCraft ? 'binCraft' : 'json');
+            url += zstd ? '&zstd' : '';
+            url += onlyMilitary ? '&filter_mil' : '';
+            lastRequestBox = requestBoxString();
+
+            if (firstFetch) {
+                url += '&box=-90,90,-180,180';
+            } else {
+                url += '&box=' + lastRequestBox;
+            }
+
+            if (SelPlanes.length > 0) {
+                url += '&find_hex='
+                for (let k in SelPlanes) {
+                    url += SelPlanes[k].icao + ','
+                }
+                url = url.slice(0, -1); // remove trailing comma
+            }
+            url += '&filter_uuid=' + filterUuid[i];
+            ac_url.push(url);
+        }
+    } else if (reApi) {
         let url = 're-api/?' + (binCraft ? 'binCraft' : 'json');
         url += zstd ? '&zstd' : '';
         url += onlyMilitary ? '&filter_mil' : '';
@@ -638,10 +661,6 @@ function fetchData(options) {
                 }
                 url = url.slice(0, -1); // remove trailing comma
             }
-        }
-
-        if (filterUuid) {
-            url += '&filter_uuid=' + filterUuid;
         }
 
         ac_url.push(url);
@@ -2317,7 +2336,6 @@ function startPage() {
 
     if (replay) {
         showReplayBar();
-        loadReplay(replay.ts);
     }
 
     if (heatmap) {
@@ -2817,8 +2835,11 @@ function initMap() {
     // always hide this, it really only shows the number of positions saved
     jQuery('#dump1090_total_history_td').hide();
 
-    if (globeIndex && aggregator) {
+    if ((globeIndex && aggregator) || filterUuid) {
         jQuery('#dump1090_message_rate_td').hide();
+    }
+    if ((globeIndex && aggregator) || (receiverJson && receiverJson.haveReplay)) {
+        jQuery('#RP').show();
     }
 
     locationDotLayer = new ol.layer.Vector({
@@ -3162,6 +3183,9 @@ function initMap() {
             case "T":
                 filterTISB = !filterTISB;
                 refreshFilter();
+                break;
+            case "Y":
+                showReplayBar();
                 break;
             case "u":
                 toggleMilitary();
@@ -6654,7 +6678,7 @@ function updateAddressBar() {
     }
     //console.log(shareLink);
 
-    if (!string && !usp.has('showTrace') && !usp.has('icao')) {
+    if (!string && !usp.has('showTrace') && !usp.has('icao') && !usp.has('replay')) {
         string = initialURL;
     } else {
         string = pathName + string;
@@ -8444,10 +8468,12 @@ function showReplayBar(){
     showingReplayBar = !showingReplayBar;
     if (!showingReplayBar){
         jQuery("#replayBar").hide();
+        clearTimeout(refreshId);
         replay = null;
         jQuery('#map_canvas').height('100%');
         jQuery('#sidebar_canvas').height('100%');
         jQuery("#selected_showTrace_hide").show();
+        fetchData({force: true});
     } else {
         jQuery("#replayBar").show();
         jQuery("#replayBar").css('display', 'grid');
@@ -8456,7 +8482,6 @@ function showReplayBar(){
         jQuery('#sidebar_canvas').height('calc(100% - 110px)');
         if (!replay) {
             replay = replayDefaults(new Date());
-            replay.playing = false;
         }
         //ts.setUTCMinutes((parseInt((ts.getUTCMinutes() + 7.5)/15) * 15) % 60);
         let datepickerOptions = {
@@ -8522,7 +8547,11 @@ function showReplayBar(){
         jQuery('#replaySpeedHint').text('Speed: ' + replay.speed + 'x');
 
         jQuery("#selected_showTrace_hide").hide();
+
+        loadReplay(replay.ts);
     }
+
+    updateAddressBar();
 };
 
 function timeoutFetch() {
@@ -8937,7 +8966,7 @@ function loadEGM() {
 }
 function adjust_geom_alt(alt, pos) {
     if (geomUseEGM && egmLoaded) {
-        if (alt == null) {
+        if (alt == null || pos == null) {
             return alt;
         }
         return egm96.ellipsoidToEgm96(pos[1], pos[0], alt * 0.3048) / 0.3048;
