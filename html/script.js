@@ -195,6 +195,114 @@ let unreg_milmodel_name = "";
 //ins-s 騒音検知時間 param by oki098972
 let php_result_fname = "";
 //ins-e 騒音検知時間 param by oki098972
+//ins-s フォントサイズ切り替えforスマホ by oki098972
+/**
+ * 「デバイス情報を判定する」
+ * Android Chrome の「PC版サイト」は JavaScript から直接判定できるAPIが存在しないため、以下の条件から推定する。
+ *   ・Linux と判定される／タッチ対応／高DPI(devicePixelRatio >= 2)
+ * confidenceの意味   100 : API等による確定情報   70 : 複数情報からの推定   50 : User-Agentによる救済判定   0 : 判定不能
+ */
+function detectDevice() {
+    const info = {
+        os: "Unknown",
+        mobile: false,
+        touch: navigator.maxTouchPoints > 0,
+        desktopMode: false,
+        confidence: 0 };
+
+    const dpr = window.devicePixelRatio || 1;
+    // Chrome Client Hints
+    const uaData = navigator.userAgentData;
+    const platform = uaData?.platform || navigator.platform;
+
+    info.platform = platform;
+    info.dpr = window.devicePixelRatio;
+    info.maxTouchPoints = navigator.maxTouchPoints;
+    info.innerWidth = window.innerWidth;
+
+    // ----------------------------------------------------
+    // 最優先
+    // Android Chrome 「PC版サイト」推定
+    //
+    // Android ChromeのPC版サイトでは Linux として振る舞う。
+    // Linuxなのにタッチ対応かつ高DPIなら
+    // Android PC版サイトである可能性が高い。
+    // ----------------------------------------------------
+    if (
+        platform.startsWith("Linux") &&
+        info.touch &&
+        dpr >= 2
+    ) {
+        info.os = "Android";
+        info.mobile = true;
+        info.desktopMode = true;
+        info.confidence = 70;
+        return info;
+    }
+
+    // Client Hints が使えるならこちらを優先
+    if (uaData) {
+        switch (uaData.platform) {
+            case "Android":
+                info.os = "Android";
+                info.mobile = uaData.mobile;
+                info.confidence = 100;
+                return info;
+            case "Windows":
+                info.os = "Windows";
+                info.confidence = 100;
+                return info;
+            case "macOS":
+                info.os = "macOS";
+                info.confidence = 100;
+                return info;
+            case "Linux":
+                info.os = "Linux";
+                info.confidence = 100;
+                return info;
+            case "Chrome OS":
+                info.os = "ChromeOS";
+                info.confidence = 100;
+                return info;
+        }
+    }
+
+    // navigator.platform
+    if (platform.startsWith("Win")) {
+        info.os = "Windows";
+        info.confidence = 90;
+        return info;
+    }
+    if (platform.startsWith("Mac")) {
+        info.os = "macOS";
+        info.confidence = 90;
+        return info;
+    }
+    if (platform.startsWith("Linux")) {
+        info.os = "Linux";
+        info.confidence = 90;
+        return info;
+    }
+
+    // 最後の救済
+    // Android通常モードのみUAを利用する。
+    const ua = navigator.userAgent;
+    if (/Android/i.test(ua)) {
+        info.os = "Android";
+        info.mobile = true;
+        info.confidence = 50;
+        return info;
+    }
+    if (/iPhone|iPad|iPod/i.test(ua)) {
+        info.os = "iOS";
+        info.mobile = true;
+        info.confidence = 50;
+        return info;
+    }
+    return info;
+}
+const oki972Deviceobj = detectDevice();
+//ins-e フォントサイズ切り替えforスマホ by oki098972
 
 function processAircraft(ac, init, uat) {
     const isArray = Array.isArray(ac);
@@ -5865,7 +5973,18 @@ function setGlobalScale(scale, init) {
 //ins-s ラベルに出す文字を小さくする by oki098972
     //labelFont2 = "bold " + (13 * globalScale * labelScale) + "px/" + (14 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
     //labelFont2 = "normal " + (11 * globalScale * labelScale) + "px/" + (11.5 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
-    labelFont2 = "normal " + (12 * globalScale * labelScale) + "px/" + (13 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    //フォントサイズ切り替えforスマホ
+    if ((oki972Deviceobj.os == "Android") && (oki972Deviceobj.desktopMode) && (oki972Deviceobj.innerWidth < 1000)) {
+        //アンドロイドかつ横幅小の場合は文字サイズを大きくする（白抜き文字だと小サイズの場合文字の形が汚くなるので）
+        labelFont2 = "bold " + (17 * globalScale * labelScale) + "px/" + (17.5 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    } else {
+        //それ以外（PC想定）では従来サイズ
+        labelFont2 = "normal " + (12 * globalScale * labelScale) + "px/" + (13 * globalScale * labelScale) + "px Tahoma, Verdana, Helvetica, sans-serif";
+    }
+//debug by oki098972
+    //jQuery('#oki_debug_str1').updateText(navigator.userAgent);
+    //jQuery('#oki_debug_str2').updateText(JSON.stringify(oki972Deviceobj, null, 4));
+//debug by oki098972
 //ins-e ラベルに出す文字を小さくする by oki098972
 
     checkScale();
