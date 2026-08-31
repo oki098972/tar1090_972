@@ -10276,6 +10276,8 @@ function getCsvAndConvArray(url){
 }
 
 //confirmAsyncを改造してnoize_confirmAsync
+//Noizelevel以上の音量を検知した時間帯を表示機能の為のコード
+//本機能をEnableにするには、/usr/local/share/tar1090_972/html/shareディレクトリをパーミッション777で手動作成すること
 const noize_confirmAsync = async message => {
     let i = 0;
 
@@ -10349,6 +10351,8 @@ const noize_confirmAsync = async message => {
     });
 };
 
+//Noizelevel以上の音量を検知した時間帯を表示機能の為のコード
+//本機能をEnableにするには、/usr/local/share/tar1090_972/html/shareディレクトリをパーミッション777で手動作成すること
 async function FighterSoundTime() {
     let strTemp = "";
     let i = 0;

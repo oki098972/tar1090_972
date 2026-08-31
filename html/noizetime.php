@@ -1,4 +1,8 @@
 <?php
+    //Noizelevel以上の音量を検知した時間帯を表示機能の為のコード
+    ///home/toshi-shimoji/share/noize/に蓄積したデータから下記コメントの１．２．のファイルを作る
+    //phpコードにした理由は上記ディレクトリがブラウザからアクセス不能の場所にあり、javascriptで操作できない為
+    //本機能をEnableにするには、/usr/local/share/tar1090_972/html/shareディレクトリをパーミッション777で手動作成すること
     $arg_halfday = $_GET['Halfday'];
     $arg_noizelevel = $_GET['Noizelevel'];
 

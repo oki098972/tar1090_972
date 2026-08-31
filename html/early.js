@@ -60,6 +60,9 @@ let TraceHour = false;
 //ins-s add 通報簡略化 param by oki098972
 let TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s carto map need api key by oki098972
+let CartoAPIkey = "";
+//ins-e carto map need api key by oki098972
 //ins-s 騒音検知時間 by oki098972
 let Noizelevel = false;
 //ins-e 騒音検知時間 by oki098972
@@ -302,6 +305,37 @@ function getTownname() {
 }
 //ins-e add 通報簡略化 param by oki098972
 
+//ins-s carto map need api key by oki098972
+function setCartoAPIkey() {
+    if(typeof localStorage === 'undefined') {
+        CartoAPIkey = "";
+    } else {
+        let tmp = jQuery("#cartoapikey_input").val().trim();
+        if ( (tmp !== null) && (tmp.length > 0) ) {
+            CartoAPIkey = tmp;
+            localStorage.setItem('CartoAPIkey', CartoAPIkey);
+        } else {
+            CartoAPIkey = "";
+        }
+    }
+    return;
+}
+function getCartoAPIkey() {
+    if(typeof localStorage === 'undefined') {
+        CartoAPIkey = "";
+    } else {
+		let tmp = localStorage.getItem('CartoAPIkey');
+        if ( (tmp !== null) && (tmp.length > 0) ) {
+            CartoAPIkey = tmp;
+        } else {
+            CartoAPIkey = "";
+        }
+    }
+    jQuery("#cartoapikey_input").val(CartoAPIkey);
+    return;
+}
+//ins-e carto map need api key by oki098972
+
 //ins-s 騒音検知時間 by oki098972
 function setNoizelevelparam() {
     if(typeof localStorage === 'undefined') {
@@ -488,6 +522,9 @@ if (usp.has('pTracks')) {
 //ins-s add 通報簡略化 param by oki098972
         TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s carto map need api key by oki098972
+        CartoAPIkey = "";
+//ins-e carto map need api key by oki098972
 //ins-s 騒音検知時間 by oki098972
         Noizelevel = 2000;
 //ins-e 騒音検知時間 by oki098972
@@ -504,10 +541,17 @@ if (usp.has('pTracks')) {
         else
             TownName = "未設定";
 //ins-e add 通報簡略化 param by oki098972
+//ins-s carto map need api key by oki098972
+        let tmp3 = localStorage.getItem('CartoAPIkey');
+        if ( (tmp3 !== null) && (tmp3.length > 0) )
+            CartoAPIkey = tmp3;
+        else
+            CartoAPIkey = "";
+//ins-e carto map need api key by oki098972
 //ins-s 騒音検知時間 by oki098972
-        let tmp3 = localStorage.getItem('Noizelevel');
-        if ( (tmp3 !== null) && isFinite(tmp3) )
-            Noizelevel = Number(tmp3);
+        let tmp4 = localStorage.getItem('Noizelevel');
+        if ( (tmp4 !== null) && isFinite(tmp4) )
+            Noizelevel = Number(tmp4);
         else
             Noizelevel = 2000;
 //ins-e 騒音検知時間 by oki098972

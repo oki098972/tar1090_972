@@ -76,7 +76,10 @@ function createBaseLayers() {
         let basemap_id = "rastertiles/voyager";
         world.push(new ol.layer.Tile({
             source: new ol.source.OSM({
-                "url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png",
+//chg-s carto map need api key by oki098972
+                //"url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png",
+                "url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png?key=" + CartoAPIkey,
+//chg-e carto map need api key by oki098972
                 "attributions" : 'Powered by <a href="https://carto.com">CARTO.com</a>'
                 + ' using data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
                 attributionsCollapsible: false,
@@ -170,8 +173,12 @@ function createBaseLayers() {
             title: 'OpenFreeMap Bright',
             onVisible: (layer) => {
                 if (!layer.get('styleApplied')) {
-                    ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/bright");
-                    ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/bright");
+//chg-s OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
+                    //ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/bright");
+                    //ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/bright");
+                    ol.mapboxStyle.applyStyle(layer, "./openfreemap_styles/bright.json");
+                    ol.mapboxStyle.applyBackground(layer, "./openfreemap_styles/bright.json");
+//chg-e OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
                     layer.set('styleApplied', true);
                 }
             },
@@ -184,8 +191,12 @@ function createBaseLayers() {
             title: 'OpenFreeMap Liberty',
             onVisible: (layer) => {
                 if (!layer.get('styleApplied')) {
-                    ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/liberty");
-                    ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/liberty");
+//chg-s OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
+                    //ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/liberty");
+                    //ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/liberty");
+                    ol.mapboxStyle.applyStyle(layer, "./openfreemap_styles/liberty.json");
+                    ol.mapboxStyle.applyBackground(layer, "./openfreemap_styles/liberty.json");
+//chg-e OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
                     layer.set('styleApplied', true);
                 }
             },
@@ -198,8 +209,12 @@ function createBaseLayers() {
             title: 'OpenFreeMap Positron',
             onVisible: (layer) => {
                 if (!layer.get('styleApplied')) {
-                    ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/positron");
-                    ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/positron");
+//chg-s OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
+                    //ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/positron");
+                    //ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/positron");
+                    ol.mapboxStyle.applyStyle(layer, "./openfreemap_styles/positron.json");
+                    ol.mapboxStyle.applyBackground(layer, "./openfreemap_styles/positron.json");
+//chg-e OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
                     layer.set('styleApplied', true);
                 }
             },
@@ -212,8 +227,12 @@ function createBaseLayers() {
             title: 'OpenFreeMap Dark',
             onVisible: (layer) => {
                 if (!layer.get('styleApplied')) {
-                    ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/dark");
-                    ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/dark");
+//chg-s OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
+                    //ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/dark");
+                    //ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/dark");
+                    ol.mapboxStyle.applyStyle(layer, "./openfreemap_styles/dark.json");
+                    ol.mapboxStyle.applyBackground(layer, "./openfreemap_styles/dark.json");
+//chg-e OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
                     layer.set('styleApplied', true);
                 }
             },
@@ -226,8 +245,12 @@ function createBaseLayers() {
             title: 'OpenFreeMap Fiord',
             onVisible: (layer) => {
                 if (!layer.get('styleApplied')) {
-                    ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/fiord");
-                    ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/fiord");
+//chg-s OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
+                    //ol.mapboxStyle.applyStyle(layer, "https://tiles.openfreemap.org/styles/fiord");
+                    //ol.mapboxStyle.applyBackground(layer, "https://tiles.openfreemap.org/styles/fiord");
+                    ol.mapboxStyle.applyStyle(layer, "./openfreemap_styles/fiord.json");
+                    ol.mapboxStyle.applyBackground(layer, "./openfreemap_styles/fiord.json");
+//chg-e OpenFreeMapについてはローカルでスタイル情報を持つ by oki098972
                     layer.set('styleApplied', true);
                 }
             },
@@ -349,21 +372,29 @@ function createBaseLayers() {
         type: 'base',
     }));
 
-    if (0) {
+//del-s carto map need api key by oki098972
+    //if (0) {
+//del-e carto map need api key by oki098972
         // carto.com basemaps, see the following URLs for details on them:
         // http://basemaps.cartocdn.com
         // https://github.com/CartoDB/cartodb/wiki/BaseMaps-available
 
-        let basemaps = [ "dark_all", "dark_nolabels",
-            "light_all", "light_nolabels"
-        ]
+//chg-s carto map need api key by oki098972
+        //let basemaps = [ "dark_all", "dark_nolabels",
+        //    "light_all", "light_nolabels"
+        //]
+        let basemaps = [ "dark_all", "light_all" ]
+//chg-e carto map need api key by oki098972
 
         for (let i in basemaps) {
             let basemap_id = basemaps[i];
 
             world.push(new ol.layer.Tile({
                 source: new ol.source.OSM({
-                    "url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png",
+//chg-s carto map need api key by oki098972
+                    //"url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png",
+                    "url" : "https://{a-d}.basemaps.cartocdn.com/"+ basemap_id + "/{z}/{x}/{y}.png?key=" + CartoAPIkey,
+//chg-e carto map need api key by oki098972
                     "attributions" : 'Powered by <a href="https://carto.com">CARTO.com</a>'
                     + ' using data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
                     attributionsCollapsible: false,
@@ -375,7 +406,9 @@ function createBaseLayers() {
                 type: 'base',
             }));
         }
-    }
+//del-s carto map need api key by oki098972
+    //}
+//del-e carto map need api key by oki098972
 
     if (loStore['mapboxKey'] != undefined)
         MapboxAPIKey = loStore['mapboxKey'];
