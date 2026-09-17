@@ -216,6 +216,12 @@ ColorByAlt = {
 //
 // Carto api key
 //carto_api_key = "";
+//ins-s carto map need api key by oki098972
+if ( (CartoAPIkey !== null) && (CartoAPIkey.length > 0) )
+{
+    carto_api_key = CartoAPIkey;
+}
+//ins-e carto map need api key by oki098972
 
 // This determines what is up, default is north (0 degrees)
 //mapOrientation = 0;

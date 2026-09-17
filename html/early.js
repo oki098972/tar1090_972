@@ -314,7 +314,6 @@ function setCartoAPIkey() {
         if ( (tmp !== null) && (tmp.length > 0) ) {
             CartoAPIkey = tmp;
             localStorage.setItem('CartoAPIkey', CartoAPIkey);
-            carto_api_key = CartoAPIkey;
         } else {
             CartoAPIkey = "";
         }
@@ -328,7 +327,6 @@ function getCartoAPIkey() {
 		let tmp = localStorage.getItem('CartoAPIkey');
         if ( (tmp !== null) && (tmp.length > 0) ) {
             CartoAPIkey = tmp;
-            carto_api_key = CartoAPIkey;
         } else {
             CartoAPIkey = "";
         }
@@ -547,7 +545,6 @@ if (usp.has('pTracks')) {
         let tmp3 = localStorage.getItem('CartoAPIkey');
         if ( (tmp3 !== null) && (tmp3.length > 0) ) {
             CartoAPIkey = tmp3;
-            carto_api_key = CartoAPIkey;
         } else {
             CartoAPIkey = "";
         }
