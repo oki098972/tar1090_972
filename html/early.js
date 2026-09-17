@@ -545,11 +545,12 @@ if (usp.has('pTracks')) {
 //ins-e add 通報簡略化 param by oki098972
 //ins-s carto map need api key by oki098972
         let tmp3 = localStorage.getItem('CartoAPIkey');
-        if ( (tmp3 !== null) && (tmp3.length > 0) )
+        if ( (tmp3 !== null) && (tmp3.length > 0) ) {
             CartoAPIkey = tmp3;
             carto_api_key = CartoAPIkey;
-        else
+        } else {
             CartoAPIkey = "";
+        }
 //ins-e carto map need api key by oki098972
 //ins-s 騒音検知時間 by oki098972
         let tmp4 = localStorage.getItem('Noizelevel');
