@@ -10338,7 +10338,7 @@ const noize_confirmAsync = async message => {
                 let xhr = new XMLHttpRequest();
                 
                 //openの第三引数は同期(false)に変更
-                xhr.open("GET","./noizetime.php?Halfday=" + tgt_halfday[halfday_val].replaceAll(" ", "") + "&Noizelevel=" + Noizelevel.toString(),false); 
+                xhr.open("GET","./noizetime.py?Halfday=" + tgt_halfday[halfday_val].replaceAll(" ", "") + "&Noizelevel=" + Noizelevel.toString(),false); 
                 xhr.send(null);
                 php_result_fname = xhr.responseText; //同期型だとこれにする必要がある
             }
