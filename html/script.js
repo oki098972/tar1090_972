@@ -10402,8 +10402,12 @@ async function FighterSoundTime() {
         }
         //投稿用文字列を追加
         let csv_d = csvdata[0][0].match(/^([0-9]{4})\/([0-9]{2})\/([0-9]{2})/u);
-        strTemp = TownName + " " + String(csv_d[2]) + "/" +  String(csv_d[3]) + "<br>戦闘機の可能性大の大きい音がした時間<br>" 
+        if (csv_d) {
+            strTemp = TownName + " " + String(csv_d[2]) + "/" +  String(csv_d[3]) + "<br>戦闘機の可能性大の大きい音がした時間<br>" 
                       + String(Noizelevel) + "以上で抽出<br><br>" + strTemp + "<br>#OHアラート";
+        } else {
+            console.error("本機能をEnableにするには、/usr/local/share" + location.pathname + "html/shareディレクトリをパーミッション777で手動作成すること");
+        }
     } else {
         strTemp = "キャンセルしました";
     }
