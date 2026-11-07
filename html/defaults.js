@@ -302,8 +302,12 @@ let defaultTrackLabels = false;     // K: track labels
 
 // some scaling for fonts and things
 let globalScale = 1;
-let userScale = 1;
-let iconScale = 1;
+//chg-s ブラウザキャッシュをクリアしても文字サイズ、アイコンサイズが変わらないようにする by oki098972
+//let userScale = 1;
+//let iconScale = 1;
+let userScale = 0.9261676410170553;
+let iconScale = 0.8746896591546225;
+//chg-e ブラウザキャッシュをクリアしても文字サイズ、アイコンサイズが変わらないようにする by oki098972
 
 let displayUATasADSB = false;
 let uatNoTISB = false;
