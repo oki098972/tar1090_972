@@ -10406,8 +10406,8 @@ async function FighterSoundTime() {
             strTemp = TownName + " " + String(csv_d[2]) + "/" +  String(csv_d[3]) + "<br>戦闘機の可能性大の大きい音がした時間<br>" 
                       + String(Noizelevel) + "以上で抽出<br><br>" + strTemp + "<br>#OHアラート";
         } else {
-            strTemp = "本機能は無効です。有効にする為にはサーバの設定変更必要です。";
-            console.log("本機能をEnableにするには、/usr/local/share" + location.pathname + "html/shareディレクトリをパーミッション777で手動作成すること");
+            strTemp = "本機能は無効です。有効にする為にはサーバの設定変更が必要です。";
+            console.log("★★★本機能をEnableにするには、/usr/local/share" + location.pathname + "html/shareディレクトリをパーミッション777で手動作成すること");
         }
     } else {
         strTemp = "キャンセルしました";
